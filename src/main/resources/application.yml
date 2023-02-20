@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:mysql://party-grouping-db-mysql.cfqklqvisqbg.ap-northeast-2.rds.amazonaws.com:3306/party_grouping_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: admin
-    password: RJSgh_8514
+    username: springDB
+    password: 0000
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:

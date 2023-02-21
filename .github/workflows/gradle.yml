@@ -10,8 +10,8 @@ on:
 env:
   AWS_REGION: ap-northeast-2
   S3_BUCKET_NAME: party-grouping-github-action
-  CODE_DEPLOY_APPLICATION_NAME: party-grouping-code-deploy
-  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: party-grouping-code-deploy-deployment-group
+  CODE_DEPLOY_APPLICATION_NAME: party-grouping-codedeploy
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: party-grouping-codedeploy
 
 permissions:
   contents: read

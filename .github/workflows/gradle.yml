@@ -37,8 +37,10 @@ jobs:
       # (3) Mysql Datasource 설정 세팅
       - uses: actions/checkout@v3
       - run: |
-          sed -i.bak "s|test|qqasw|g" src/main/resources/test.txt && \
-          cat src/main/resources/test.txt
+          sed -i.bak "s|localhost|party-grouping-db-mysql.cfqklqvisqbg.ap-northeast-2.rds.amazonaws.com|g" src/main/resources/application.yml && \
+          sed -i.bak "s|pwd_root|lgh_spring_pwd|g" src/main/resources/application.yml && \
+          sed -i.bak "s|root|springDB|g" src/main/resources/application.yml && \
+          cat src/main/resources/application.yml
 
       # (4) Gradle build (Test 제외)
       - name: Build with Gradle

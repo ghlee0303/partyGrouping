@@ -37,7 +37,7 @@ jobs:
       # (3) Mysql Datasource 설정 세팅
       - uses: actions/checkout@v3
       - run: |
-          sed -i.bak "s|test|qqasw|g" src\main\resources\test.txt && \
+          sed -i.bak "s|test|qqasw|g" src/main/resources/test.txt && \
           cat src\main\resources\test.txt
 
       # (4) Gradle build (Test 제외)

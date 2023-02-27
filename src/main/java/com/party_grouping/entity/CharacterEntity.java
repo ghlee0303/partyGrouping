@@ -17,9 +17,15 @@ public class CharacterEntity extends BaseEntity {
     public CharacterEntity() {
     }
 
-    public CharacterEntity(Integer id, String name, Integer level) {
-        this.id = id;
-        this.name = name;
-        this.level = level;
+    public Integer getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Integer getLevel() {
+        return level;
     }
 }

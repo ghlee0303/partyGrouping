@@ -13,4 +13,12 @@ public class GroupEntity extends BaseEntity {
 
     public GroupEntity() {
     }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
 }

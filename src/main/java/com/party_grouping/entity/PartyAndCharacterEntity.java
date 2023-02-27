@@ -20,4 +20,24 @@ public class PartyAndCharacterEntity {
 
     public PartyAndCharacterEntity() {
     }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public Integer getPartyNumber() {
+        return partyNumber;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public CharacterEntity getCharacter() {
+        return character;
+    }
+
+    public PartyEntity getParty() {
+        return party;
+    }
 }

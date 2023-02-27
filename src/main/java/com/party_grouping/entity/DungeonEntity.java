@@ -16,4 +16,24 @@ public class DungeonEntity extends BaseEntity{
 
     public DungeonEntity() {
     }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public Integer getDungeonCode() {
+        return dungeonCode;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Integer getLevelLimit() {
+        return levelLimit;
+    }
 }

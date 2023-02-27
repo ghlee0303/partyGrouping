@@ -22,4 +22,20 @@ public class CharacterAndDungeonEntity extends BaseEntity {
 
     public CharacterAndDungeonEntity() {
     }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public LocalDateTime getClearDate() {
+        return clearDate;
+    }
+
+    public CharacterEntity getCharacter() {
+        return character;
+    }
+
+    public DungeonEntity getDungeon() {
+        return dungeon;
+    }
 }

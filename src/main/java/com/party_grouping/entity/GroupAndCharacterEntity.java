@@ -18,4 +18,16 @@ public class GroupAndCharacterEntity {
 
     public GroupAndCharacterEntity() {
     }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public CharacterEntity getCharacter() {
+        return character;
+    }
+
+    public GroupEntity getGroup() {
+        return group;
+    }
 }

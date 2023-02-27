@@ -22,4 +22,24 @@ public class PartyEntity extends BaseEntity {
 
     public PartyEntity() {
     }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getPartyName() {
+        return partyName;
+    }
+
+    public LocalDateTime getEntryTime() {
+        return entryTime;
+    }
+
+    public DungeonEntity getDungeon() {
+        return dungeon;
+    }
+
+    public GroupEntity getGroup() {
+        return group;
+    }
 }

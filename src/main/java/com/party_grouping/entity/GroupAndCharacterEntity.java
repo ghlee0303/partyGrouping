@@ -1,4 +1,4 @@
-package LGH.partyGrouping.Entity;
+package com.party_grouping.entity;
 
 import jakarta.persistence.*;
 

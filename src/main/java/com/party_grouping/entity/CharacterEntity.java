@@ -1,13 +1,12 @@
 package com.party_grouping.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "character")
+@Table(name = "character_table")
 public class CharacterEntity extends BaseEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String name;
@@ -15,6 +14,11 @@ public class CharacterEntity extends BaseEntity {
     private Integer level;
 
     public CharacterEntity() {
+    }
+
+    public CharacterEntity(String name, Integer level) {
+        this.name = name;
+        this.level = level;
     }
 
     public Integer getId() {
@@ -27,5 +31,13 @@ public class CharacterEntity extends BaseEntity {
 
     public Integer getLevel() {
         return level;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
     }
 }

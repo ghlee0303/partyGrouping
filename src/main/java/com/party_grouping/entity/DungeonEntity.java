@@ -1,13 +1,12 @@
 package com.party_grouping.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "dungeon")
+@Table(name = "dungeon_table")
 public class DungeonEntity extends BaseEntity{
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer id;
     public Integer dungeonCode;
     public String name;

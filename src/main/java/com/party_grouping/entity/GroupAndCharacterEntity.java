@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "group-character")
 public class GroupAndCharacterEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer id;
 
     @ManyToOne(targetEntity = CharacterEntity.class, fetch = FetchType.LAZY)

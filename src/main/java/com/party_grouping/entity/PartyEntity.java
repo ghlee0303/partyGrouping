@@ -5,9 +5,10 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "party")
+@Table(name = "party_table")
 public class PartyEntity extends BaseEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer id;
     public String partyName;
     public LocalDateTime entryTime;

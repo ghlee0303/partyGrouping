@@ -1,13 +1,12 @@
 package com.party_grouping.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "group")
+@Table(name = "group_table")
 public class GroupEntity extends BaseEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer id;
     public String groupName;
 

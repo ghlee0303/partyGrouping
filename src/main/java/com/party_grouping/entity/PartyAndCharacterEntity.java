@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "party-character")
 public class PartyAndCharacterEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer id;
     public Integer partyNumber;
     public String description;

@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 public class PartyEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Integer id;
-    public String partyName;
-    public LocalDateTime entryTime;
+    private Integer id;
+    private String partyName;
+    private LocalDateTime entryTime;
 
     @ManyToOne(targetEntity = DungeonEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name="dungeon_id")

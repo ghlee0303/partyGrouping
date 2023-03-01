@@ -7,11 +7,11 @@ import jakarta.persistence.*;
 public class DungeonEntity extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Integer id;
-    public Integer dungeonCode;
-    public String name;
-    public String description;
-    public Integer levelLimit;
+    private Integer id;
+    private Integer dungeonCode;
+    private String name;
+    private String description;
+    private Integer levelLimit;
 
     public DungeonEntity() {
     }

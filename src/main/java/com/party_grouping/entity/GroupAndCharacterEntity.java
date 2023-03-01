@@ -7,15 +7,15 @@ import jakarta.persistence.*;
 public class GroupAndCharacterEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Integer id;
+    private Integer id;
 
     @ManyToOne(targetEntity = CharacterEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name="character_id")
-    public CharacterEntity character;
+    private CharacterEntity character;
 
     @ManyToOne(targetEntity = GroupEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
-    public GroupEntity group;
+    private GroupEntity group;
 
     public GroupAndCharacterEntity() {
     }

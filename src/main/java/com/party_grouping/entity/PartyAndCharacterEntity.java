@@ -7,9 +7,9 @@ import jakarta.persistence.*;
 public class PartyAndCharacterEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Integer id;
-    public Integer partyNumber;
-    public String description;
+    private Integer id;
+    private Integer partyNumber;
+    private String description;
 
     @ManyToOne(targetEntity = CharacterEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name="character_id")

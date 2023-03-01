@@ -7,8 +7,8 @@ import jakarta.persistence.*;
 public class GroupEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Integer id;
-    public String groupName;
+    private Integer id;
+    private String groupName;
 
     public GroupEntity() {
     }

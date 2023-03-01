@@ -8,17 +8,18 @@ import java.time.LocalDateTime;
 @Table(name = "character-dungeon")
 public class CharacterAndDungeonEntity extends BaseEntity {
     @Id
-    public Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    public LocalDateTime clearDate;
+    private LocalDateTime clearDate;
 
     @ManyToOne(targetEntity = CharacterEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name="character_id")
-    public CharacterEntity character;
+    private CharacterEntity character;
 
     @ManyToOne(targetEntity = DungeonEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "dungeon_id")
-    public DungeonEntity dungeon;
+    private DungeonEntity dungeon;
 
     public CharacterAndDungeonEntity() {
     }

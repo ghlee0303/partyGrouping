@@ -1,6 +1,7 @@
 package com.party_grouping.config;
 
 import com.party_grouping.repository.CharacterRepo;
+import com.party_grouping.service.CharacterService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -22,6 +23,11 @@ public class SpringConfig {
     @Bean
     public CharacterRepo characterResp() {
         return new CharacterRepo(jpaQueryFactory());
+    }
+
+    @Bean
+    public CharacterService characterService() {
+        return new CharacterService(characterResp());
     }
 
     @Bean

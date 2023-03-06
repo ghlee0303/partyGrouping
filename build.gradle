@@ -47,6 +47,9 @@ dependencies {
 
 	// 스프링 시큐리티
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// ModelMapper
+	implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.4.2'
 }
 tasks.named('test') {
 	useJUnitPlatform()

@@ -1,11 +1,7 @@
 package com.party_grouping.config;
 
-import com.party_grouping.repository.CharacterAndDungeonRepo;
-import com.party_grouping.repository.CharacterRepo;
-import com.party_grouping.repository.DungeonRepo;
-import com.party_grouping.service.CharacterAndDungeonService;
-import com.party_grouping.service.CharacterService;
-import com.party_grouping.service.DungeonService;
+import com.party_grouping.repository.*;
+import com.party_grouping.service.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -53,6 +49,46 @@ public class SpringConfig {
     @Bean
     public CharacterAndDungeonService characterAndDungeonService() {
         return new CharacterAndDungeonService(characterAndDungeonRepo(), characterRepo(), dungeonRepo());
+    }
+
+    @Bean
+    public PartyRepo partyRepo() {
+        return new PartyRepo(jpaQueryFactory(), dungeonRepo(), groupRepo());
+    }
+
+    @Bean
+    public PartyService partyService() {
+        return new PartyService(partyRepo());
+    }
+
+    @Bean
+    public PartyAndCharacterRepo partyAndCharacterRepo() {
+        return new PartyAndCharacterRepo(jpaQueryFactory(), partyRepo(), characterRepo());
+    }
+
+    @Bean
+    public PartyAndCharacterService partyAndCharacterService() {
+        return new PartyAndCharacterService(partyAndCharacterRepo(), partyRepo(), characterRepo());
+    }
+
+    @Bean
+    public GroupRepo groupRepo() {
+        return new GroupRepo(jpaQueryFactory());
+    }
+
+    @Bean
+    public GroupService groupService() {
+        return new GroupService(groupRepo());
+    }
+
+    @Bean
+    public GroupAndCharacterRepo groupAndCharacterRepo() {
+        return new GroupAndCharacterRepo(jpaQueryFactory(), groupRepo(), characterRepo());
+    }
+
+    @Bean
+    public GroupAndCharacterService groupAndCharacterService() {
+        return new GroupAndCharacterService(groupAndCharacterRepo(), groupRepo(), characterRepo());
     }
 
     @Bean

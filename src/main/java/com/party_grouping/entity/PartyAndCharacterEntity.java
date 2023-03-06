@@ -3,7 +3,7 @@ package com.party_grouping.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "party-character")
+@Table(name = "party_and_character")
 public class PartyAndCharacterEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -11,15 +11,22 @@ public class PartyAndCharacterEntity {
     private Integer partyNumber;
     private String description;
 
-    @ManyToOne(targetEntity = CharacterEntity.class, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = CharacterEntity.class)
     @JoinColumn(name="character_id")
-    public CharacterEntity character;
+    private CharacterEntity character;
 
-    @ManyToOne(targetEntity = PartyEntity.class, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = PartyEntity.class)
     @JoinColumn(name = "party_id")
-    public PartyEntity party;
+    private PartyEntity party;
 
     public PartyAndCharacterEntity() {
+    }
+
+    public PartyAndCharacterEntity(Integer partyNumber, String description, CharacterEntity character, PartyEntity party) {
+        this.partyNumber = partyNumber;
+        this.description = description;
+        this.character = character;
+        this.party = party;
     }
 
     public Integer getId() {
@@ -40,5 +47,21 @@ public class PartyAndCharacterEntity {
 
     public PartyEntity getParty() {
         return party;
+    }
+
+    public void setPartyNumber(Integer partyNumber) {
+        this.partyNumber = partyNumber;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCharacter(CharacterEntity character) {
+        this.character = character;
+    }
+
+    public void setParty(PartyEntity party) {
+        this.party = party;
     }
 }

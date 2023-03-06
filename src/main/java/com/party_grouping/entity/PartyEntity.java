@@ -24,6 +24,13 @@ public class PartyEntity extends BaseEntity {
     public PartyEntity() {
     }
 
+    public PartyEntity(String partyName, LocalDateTime entryTime, DungeonEntity dungeon, GroupEntity group) {
+        this.partyName = partyName;
+        this.entryTime = entryTime;
+        this.dungeon = dungeon;
+        this.group = group;
+    }
+
     public Integer getId() {
         return id;
     }

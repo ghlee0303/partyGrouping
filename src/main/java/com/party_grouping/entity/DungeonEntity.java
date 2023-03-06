@@ -16,6 +16,13 @@ public class DungeonEntity extends BaseEntity{
     public DungeonEntity() {
     }
 
+    public DungeonEntity(Integer dungeonCode, String name, String description, Integer levelLimit) {
+        this.dungeonCode = dungeonCode;
+        this.name = name;
+        this.description = description;
+        this.levelLimit = levelLimit;
+    }
+
     public Integer getId() {
         return id;
     }

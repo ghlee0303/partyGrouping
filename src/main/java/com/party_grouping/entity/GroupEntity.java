@@ -13,6 +13,10 @@ public class GroupEntity extends BaseEntity {
     public GroupEntity() {
     }
 
+    public GroupEntity(String groupName) {
+        this.groupName = groupName;
+    }
+
     public Integer getId() {
         return id;
     }

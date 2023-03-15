@@ -5,6 +5,8 @@ import com.party_grouping.entity.PartyEntity;
 import com.party_grouping.repository.PartyRepo;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Transactional
@@ -21,5 +23,9 @@ public class PartyService {
 
     public Optional<PartyDto> partyDtoOpt(Integer partyId) {
         return partyRepo.findByIdOptDto(partyId);
+    }
+
+    public List<PartyDto> partyDtoList() {
+        return partyRepo.findListDto();
     }
 }

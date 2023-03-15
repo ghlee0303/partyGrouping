@@ -2,8 +2,10 @@ package com.party_grouping.service;
 
 import com.party_grouping.dto.CharacterDto;
 import com.party_grouping.repository.CharacterRepo;
+import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Transactional
@@ -20,6 +22,10 @@ public class CharacterService {
 
     public Optional<CharacterDto> characterDtoOpt(Integer characterId) {
         return characterRepo.findByIdOptDto(characterId);
+    }
+
+    public List<CharacterDto> characterDtoList() {
+        return characterRepo.findListDto();
     }
 
 }

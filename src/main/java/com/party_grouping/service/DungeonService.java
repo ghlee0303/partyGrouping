@@ -4,6 +4,7 @@ import com.party_grouping.dto.DungeonDto;
 import com.party_grouping.repository.DungeonRepo;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Transactional
@@ -20,5 +21,9 @@ public class DungeonService {
 
     public Optional<DungeonDto> dungeonDtoOpt(Integer dungeonId) {
         return dungeonRepo.findByIdOptDto(dungeonId);
+    }
+
+    public List<DungeonDto> dungeonDtoList() {
+        return dungeonRepo.findListDto();
     }
 }

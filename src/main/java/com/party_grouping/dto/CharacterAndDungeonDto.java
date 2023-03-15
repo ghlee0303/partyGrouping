@@ -1,9 +1,9 @@
 package com.party_grouping.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.party_grouping.entity.CharacterAndDungeonEntity;
 import com.party_grouping.entity.CharacterEntity;
 import com.party_grouping.entity.DungeonEntity;
-import com.querydsl.core.annotations.QueryProjection;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,17 +14,16 @@ import java.time.LocalDateTime;
 public class CharacterAndDungeonDto extends BaseDto {
     private Integer id;
     private LocalDateTime clearDate;
+
     private CharacterDto character;
     private DungeonDto dungeon;
 
-    public CharacterAndDungeonDto() {
-    }
+    @JsonProperty("CAD_character_id")
+    private Integer characterId;
+    @JsonProperty("CAD_dungeon_id")
+    private Integer dungeonId;
 
-    public CharacterAndDungeonDto(Integer id, LocalDateTime clearDate, LocalDateTime reg_date, LocalDateTime del_date) {
-        this.id = id;
-        this.clearDate = clearDate;
-        super.reg_date = reg_date;
-        super.del_date = del_date;
+    public CharacterAndDungeonDto() {
     }
 
     public CharacterAndDungeonEntity toEntity() {

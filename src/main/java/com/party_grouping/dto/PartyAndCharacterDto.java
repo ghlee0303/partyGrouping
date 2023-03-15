@@ -1,30 +1,25 @@
 package com.party_grouping.dto;
 
-import com.querydsl.core.annotations.QueryProjection;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.time.LocalDateTime;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class PartyAndCharacterDto extends BaseDto{
     private Integer id;
-    private Integer partyNumber;
     private String description;
 
     private CharacterDto character;
-    private PartyDto partyDto;
+    private PartyDto party;
+
+    @JsonProperty("pac_party_number")
+    private Integer partyNumber;
+    @JsonProperty("pac_character_id")
+    private Integer characterId;
+    @JsonProperty("pac_party_id")
+    private Integer partyId;
 
     public PartyAndCharacterDto() {
-    }
-
-    @QueryProjection
-    public PartyAndCharacterDto(Integer id, Integer partyNumber, String description, LocalDateTime reg_date, LocalDateTime del_date) {
-        this.id = id;
-        this.partyNumber = partyNumber;
-        this.description = description;
-        super.reg_date = reg_date;
-        super.del_date = del_date;
     }
 }

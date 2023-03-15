@@ -8,20 +8,20 @@ public class GroupEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String groupName;
+    private String name;
 
     public GroupEntity() {
     }
 
-    public GroupEntity(String groupName) {
-        this.groupName = groupName;
+    public GroupEntity(String name) {
+        this.name = name;
     }
 
     public Integer getId() {
         return id;
     }
 
-    public String getGroupName() {
-        return groupName;
+    public String getName() {
+        return name;
     }
 }

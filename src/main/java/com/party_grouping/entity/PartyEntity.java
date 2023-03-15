@@ -10,7 +10,7 @@ public class PartyEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String partyName;
+    private String name;
     private LocalDateTime entryTime;
 
     @ManyToOne(targetEntity = DungeonEntity.class, fetch = FetchType.LAZY)
@@ -24,10 +24,9 @@ public class PartyEntity extends BaseEntity {
     public PartyEntity() {
     }
 
-    public PartyEntity(String partyName, LocalDateTime entryTime, DungeonEntity dungeon, GroupEntity group) {
-        this.partyName = partyName;
+    public PartyEntity(String name, LocalDateTime entryTime, GroupEntity group) {
+        this.name = name;
         this.entryTime = entryTime;
-        this.dungeon = dungeon;
         this.group = group;
     }
 
@@ -35,8 +34,8 @@ public class PartyEntity extends BaseEntity {
         return id;
     }
 
-    public String getPartyName() {
-        return partyName;
+    public String getName() {
+        return name;
     }
 
     public LocalDateTime getEntryTime() {

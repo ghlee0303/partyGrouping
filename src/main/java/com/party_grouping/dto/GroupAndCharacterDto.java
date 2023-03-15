@@ -1,6 +1,6 @@
 package com.party_grouping.dto;
 
-import com.querydsl.core.annotations.QueryProjection;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -9,8 +9,14 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper=false)
 public class GroupAndCharacterDto extends BaseDto {
     private Integer id;
+
     private CharacterDto character;
     private GroupDto group;
+
+    @JsonProperty("GAC_character_id")
+    private Integer characterId;
+    @JsonProperty("GAC_group_id")
+    private Integer groupId;
 
     public GroupAndCharacterDto() {
     }

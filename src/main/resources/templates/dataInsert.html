@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    캐릭터
+    <ul th:each="character_data : ${character_data_list}">
+        <li th:text="${character_data.name}"></li>
+    </ul>
+
+    던전
+    <ul th:each="dungeon_data : ${dungeon_data_list}">
+        <li th:text="${dungeon_data.name}"></li>
+    </ul>
+
+    파티
+    <ul th:each="party_data : ${party_data_list}">
+        <li th:text="${party_data.name}"></li>
+    </ul>
+
+    그룹
+    <ul th:each="group_data : ${group_data_list}">
+        <li th:text="${group_data.name}"></li>
+    </ul>
+    <form onSubmit="return false;">
+        <label for="characterName">캐릭터이름</label>
+        <input type="text" id="characterName">
+
+        <label for="characterLevel">레벨</label>
+        <input type="text" id="characterLevel">
+        <p></p>
+        <button id="character">캐릭터 등록</button>
+    </form>
+
+    <p></p>
+
+    <form onSubmit="return false;">
+        <label for="dungeonCode">던전 코드</label>
+        <input type="text" id="dungeonCode">
+
+        <label for="dungeonName">던전명</label>
+        <input type="text" id="dungeonName">
+
+        <label for="dungeonDescription">던전 설명</label>
+        <input type="text" id="dungeonDescription">
+
+        <label for="dungeonLevelLimit">레벨 제한</label>
+        <input type="text" id="dungeonLevelLimit">
+        <p></p>
+        <button id="dungeon">던전 등록</button>
+    </form>
+
+    <p></p>
+
+    <form onSubmit="return false;">
+        <label for="groupName">그룹명</label>
+        <input type="text" id="groupName">
+
+        <p></p>
+        <button id="group">그룹 등록</button>
+    </form>
+
+    <p></p>
+
+    <form onSubmit="return false;">
+        <label for="partyGroup">그룹</label>
+        <select name="partyGroup" id="partyGroup">
+            <option value="0">-- 선택 --</option>
+            <option th:each="group_data : ${group_data_list}" th:value="${group_data.id}"
+                    th:utext="${group_data.name}">
+            </option>
+        </select>
+
+        <label for="partyName">파티명</label>
+        <input type="text" id="partyName">
+
+        <p></p>
+        <button id="party">파티 등록</button>
+    </form>
+
+    <p></p>
+
+    <form onSubmit="return false;">
+        <label for="pacParty">파티</label>
+        <select name="pacParty" id="pacParty">
+            <option value="0">-- 선택 --</option>
+            <option th:each="party_data : ${party_data_list}" th:value="${party_data.id}"
+                    th:utext="${party_data.name}">
+            </option>
+        </select>
+
+        <label for="pacCharacter">캐릭터</label>
+        <select name="pacCharacter" id="pacCharacter">
+            <option value="0">-- 선택 --</option>
+            <option th:each="character_data : ${character_data_list}" th:value="${character_data.id}"
+                    th:utext="${character_data.name}">
+            </option>
+        </select>
+
+        <label for="pacNumber">파티번호</label>
+        <select name="pacNumber" id="pacNumber">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+        </select>
+
+        <p></p>
+        <button id="pac">파티캐릭터 추가</button>
+    </form>
+</body>
+<script type="importmap">
+  {
+    "imports": {
+      "fetchHandler": "/script/module/fetchHandler.js?v=1.0"
+    }
+  }
+</script>
+<script type="module" src="/script/dataInsert.js?v=1.0"></script>
+</html>

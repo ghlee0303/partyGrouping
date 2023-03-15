@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 public class PartyAndCharacterRepo {
@@ -32,8 +33,8 @@ public class PartyAndCharacterRepo {
 
     @Transactional
     public Integer save(PartyAndCharacterDto partyAndCharacterDto) {
-        PartyEntity party = partyRepo.findByIdOptEntity(partyAndCharacterDto.getPartyDto().getId()).get();
-        CharacterEntity character = characterRepo.findByIdOptEntity(partyAndCharacterDto.getCharacter().getId()).get();
+        PartyEntity party = partyRepo.findByIdOptEntity(partyAndCharacterDto.getPartyId()).get();
+        CharacterEntity character = characterRepo.findByIdOptEntity(partyAndCharacterDto.getCharacterId()).get();
         PartyAndCharacterEntity partyAndCharacterEntity = new PartyAndCharacterEntity(
                 partyAndCharacterDto.getPartyNumber(),
                 partyAndCharacterDto.getDescription(),
@@ -44,6 +45,29 @@ public class PartyAndCharacterRepo {
         em.flush();
 
         return partyAndCharacterEntity.getId();
+    }
+
+    public List<PartyAndCharacterDto> findListDto() {
+        List<PartyAndCharacterEntity> partyAndCharacterEntityList = queryFactory
+                .selectFrom(qPartyAndCharacterEntity)
+                .fetch();
+
+        System.out.println("???");
+
+        return partyAndCharacterEntityList
+                .stream().map(partyAndCharacterEntity -> modelMapper.map(partyAndCharacterEntity, PartyAndCharacterDto.class)).toList();
+    }
+
+    public List<PartyAndCharacterDto> findByPartyListDto(Integer partyId) {
+        List<PartyAndCharacterEntity> partyAndCharacterEntityList = queryFactory
+                .selectFrom(qPartyAndCharacterEntity)
+                .where(qPartyAndCharacterEntity.party.id.eq(partyId))
+                .fetch();
+
+        System.out.println("???");
+
+        return partyAndCharacterEntityList
+                .stream().map(partyAndCharacterEntity -> modelMapper.map(partyAndCharacterEntity, PartyAndCharacterDto.class)).toList();
     }
 
     public Optional<PartyAndCharacterDto> findByIdOptDto(Integer partyAndCharacterId) {

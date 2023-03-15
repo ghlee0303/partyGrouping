@@ -1,7 +1,6 @@
 package com.party_grouping.repository;
 
 import com.party_grouping.dto.CharacterDto;
-import com.party_grouping.dto.QCharacterDto;
 import com.party_grouping.entity.CharacterEntity;
 import com.party_grouping.entity.QCharacterEntity;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -11,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 public class CharacterRepo {
@@ -41,6 +41,15 @@ public class CharacterRepo {
                 .fetchOne();
 
         return Optional.ofNullable(modelMapper.map(characterEntity, CharacterDto.class));
+    }
+
+    public List<CharacterDto> findListDto() {
+        List<CharacterEntity> characterEntityList = queryFactory
+                .selectFrom(qCharacterEntity)
+                .fetch();
+
+        return characterEntityList
+                .stream().map(characterEntity -> modelMapper.map(characterEntity, CharacterDto.class)).toList();
     }
 
     public Optional<CharacterEntity> findByIdOptEntity(Integer characterId) {

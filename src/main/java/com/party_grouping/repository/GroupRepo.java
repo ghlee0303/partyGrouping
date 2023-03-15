@@ -1,7 +1,6 @@
 package com.party_grouping.repository;
 
 import com.party_grouping.dto.GroupDto;
-import com.party_grouping.dto.QGroupDto;
 import com.party_grouping.entity.GroupEntity;
 import com.party_grouping.entity.QGroupEntity;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -11,6 +10,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class GroupRepo {
@@ -27,7 +29,7 @@ public class GroupRepo {
 
     @Transactional
     public Integer save(GroupDto groupDto) {
-        GroupEntity group = new GroupEntity(groupDto.getGroupName());
+        GroupEntity group = new GroupEntity(groupDto.getName());
         em.persist(group);
         em.flush();
 
@@ -43,6 +45,15 @@ public class GroupRepo {
         return Optional.ofNullable(modelMapper.map(groupEntity, GroupDto.class));
     }
 
+    public List<GroupDto> findListDto() {
+        List<GroupEntity> groupEntityList = queryFactory
+                .selectFrom(qGroupEntity)
+                .fetch();
+
+        return groupEntityList
+                .stream().map(groupEntity -> modelMapper.map(groupEntity, GroupDto.class)).toList();
+    }
+
     public Optional<GroupEntity> findByIdOptEntity(Integer groupId) {
         // 반드시 Repo 단에서만 사용할 것
         return Optional.ofNullable(queryFactory
@@ -50,4 +61,5 @@ public class GroupRepo {
                 .where(qGroupEntity.id.eq(groupId))
                 .fetchOne());
     }
+
 }

@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 public class PartyRepo {
@@ -32,13 +33,11 @@ public class PartyRepo {
 
     @Transactional
     public Integer save(PartyDto partyDto) {
-        DungeonEntity dungeon = dungeonRepo.findByIdOptEntity(partyDto.getDungeon().getId()).get();
-        GroupEntity group = groupRepo.findByIdOptEntity(partyDto.getParty().getId()).get();
+        GroupEntity group = groupRepo.findByIdOptEntity(partyDto.getGroup_id()).get();
 
         PartyEntity party = new PartyEntity(
-                partyDto.getPartyName(),
+                partyDto.getName(),
                 partyDto.getEntryTime(),
-                dungeon,
                 group);
         em.persist(party);
         em.flush();
@@ -53,6 +52,15 @@ public class PartyRepo {
                 .fetchOne();
 
         return Optional.ofNullable(modelMapper.map(partyEntity, PartyDto.class));
+    }
+
+    public List<PartyDto> findListDto() {
+        List<PartyEntity> partyEntityList = queryFactory
+                .selectFrom(qPartyEntity)
+                .fetch();
+
+        return partyEntityList
+                .stream().map(party -> modelMapper.map(party, PartyDto.class)).toList();
     }
 
     public Optional<PartyEntity> findByIdOptEntity(Integer partyId) {

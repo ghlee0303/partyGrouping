@@ -1,5 +1,6 @@
 package com.party_grouping.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.party_grouping.entity.GroupEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -8,6 +9,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 public class GroupDto extends BaseDto {
     private Integer id;
+    @JsonProperty("group_name")
     private String name;
 
     public GroupDto() {

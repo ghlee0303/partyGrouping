@@ -1,5 +1,6 @@
 package com.party_grouping.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.party_grouping.entity.DungeonEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,9 +11,13 @@ public class DungeonDto extends BaseDto {
     private Integer id;
     // 던전 별 분류
     // 색인과 비슷
+    @JsonProperty("dungeon_code")
     private Integer dungeonCode;
+    @JsonProperty("dungeon_name")
     private String name;
+    @JsonProperty("dungeon_description")
     private String description;
+    @JsonProperty("dungeon_level_limit")
     private Integer levelLimit;
 
     public DungeonDto() {

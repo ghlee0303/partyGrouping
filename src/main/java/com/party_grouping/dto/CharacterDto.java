@@ -1,5 +1,6 @@
 package com.party_grouping.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.party_grouping.entity.CharacterEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -8,7 +9,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 public class CharacterDto extends BaseDto {
     private Integer id;
+    @JsonProperty("character_name")
     private String name;
+    @JsonProperty("character_level")
     private Integer level;
 
     public CharacterDto() {

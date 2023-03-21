@@ -1,8 +1,12 @@
 package com.party_grouping.repository;
 
+import com.party_grouping.dto.CharacterDto;
 import com.party_grouping.dto.PartyAndCharacterDto;
+import com.party_grouping.dto.PartyDto;
 import com.party_grouping.entity.*;
 import com.party_grouping.request.PACRequestDto;
+import com.party_grouping.response.dto.PACResponseDto;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -70,6 +74,7 @@ public class PartyAndCharacterRepo {
 
         return partyAndCharacterEntity.getId();
     }
+
     public List<PartyAndCharacterDto> findListDto() {
         List<PartyAndCharacterEntity> partyAndCharacterEntityList = queryFactory
                 .selectFrom(qPartyAndCharacterEntity)
@@ -100,5 +105,35 @@ public class PartyAndCharacterRepo {
                 .fetchOne();
 
         return Optional.ofNullable(modelMapper.map(partyAndCharacterEntity, PartyAndCharacterDto.class));
+    }
+
+    public List<PACResponseDto> findByPartyIdWithClearDateListResDto(Integer partyId) {
+        List<Tuple> result = queryFactory
+                .select(qPartyAndCharacterEntity.id,
+                        qPartyAndCharacterEntity.character,
+                        qPartyAndCharacterEntity.party,
+                        qPartyAndCharacterEntity.partyNumber,
+                        qCharacterAndDungeonEntity.id,
+                        qCharacterAndDungeonEntity.clearDate)
+                .from(qPartyAndCharacterEntity)
+                .join(qPartyEntity).on(qPartyEntity.id.eq(qPartyAndCharacterEntity.party.id))
+                .leftJoin(qCharacterAndDungeonEntity)
+                .on(qPartyAndCharacterEntity.character.eq(qCharacterAndDungeonEntity.character)
+                        .and(qPartyEntity.dungeon.eq(qCharacterAndDungeonEntity.dungeon)))
+                .where(qPartyAndCharacterEntity.party.id.eq(partyId))
+                .fetch();
+        List<PACResponseDto> returnList = new ArrayList<>();
+
+        result.forEach(tuple -> {
+            returnList.add(new PACResponseDto(
+                    tuple.get(qPartyAndCharacterEntity.id),
+                    tuple.get(qPartyAndCharacterEntity.description),
+                    modelMapper.map(tuple.get(qPartyAndCharacterEntity.character), CharacterDto.class),
+                    modelMapper.map(tuple.get(qPartyAndCharacterEntity.party), PartyDto.class),
+                    tuple.get(qPartyAndCharacterEntity.partyNumber),
+                    tuple.get(qCharacterAndDungeonEntity.clearDate)));
+        });
+
+        return returnList;
     }
 }

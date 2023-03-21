@@ -19,12 +19,13 @@ public class GroupRepo {
     @PersistenceContext
     private EntityManager em;
     private final JPAQueryFactory queryFactory;
-    private final QGroupEntity qGroupEntity = new QGroupEntity("groupEntity");
+    private final QGroupEntity qGroupEntity;
     @Autowired
     private ModelMapper modelMapper;
 
-    public GroupRepo(JPAQueryFactory queryFactory) {
+    public GroupRepo(JPAQueryFactory queryFactory, QGroupEntity qGroupEntity) {
         this.queryFactory = queryFactory;
+        this.qGroupEntity = qGroupEntity;
     }
 
     @Transactional

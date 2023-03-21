@@ -17,12 +17,13 @@ public class CharacterRepo {
     @PersistenceContext
     private EntityManager em;
     private final JPAQueryFactory queryFactory;
-    private QCharacterEntity qCharacterEntity = new QCharacterEntity("characterEntity");
+    private final QCharacterEntity qCharacterEntity;
     @Autowired
     private ModelMapper modelMapper;
 
-    public CharacterRepo(JPAQueryFactory queryFactory) {
+    public CharacterRepo(JPAQueryFactory queryFactory, QCharacterEntity qCharacterEntity) {
         this.queryFactory = queryFactory;
+        this.qCharacterEntity = qCharacterEntity;
     }
 
     @Transactional

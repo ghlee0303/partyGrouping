@@ -22,12 +22,13 @@ public class DungeonRepo {
     @PersistenceContext
     private EntityManager em;
     private final JPAQueryFactory queryFactory;
-    private QDungeonEntity qDungeonEntity = new QDungeonEntity("dungeonEntity");
+    private final QDungeonEntity qDungeonEntity;
     @Autowired
     private ModelMapper modelMapper;
 
-    public DungeonRepo(JPAQueryFactory queryFactory) {
+    public DungeonRepo(JPAQueryFactory queryFactory, QDungeonEntity qDungeonEntity) {
         this.queryFactory = queryFactory;
+        this.qDungeonEntity = qDungeonEntity;
     }
 
     @Transactional

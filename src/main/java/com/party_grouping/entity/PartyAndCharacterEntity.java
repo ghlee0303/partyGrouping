@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "party_and_character")
-public class PartyAndCharacterEntity {
+public class PartyAndCharacterEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -20,6 +20,12 @@ public class PartyAndCharacterEntity {
     private PartyEntity party;
 
     public PartyAndCharacterEntity() {
+    }
+
+    public PartyAndCharacterEntity(Integer partyNumber, CharacterEntity character, PartyEntity party) {
+        this.partyNumber = partyNumber;
+        this.character = character;
+        this.party = party;
     }
 
     public PartyAndCharacterEntity(Integer partyNumber, String description, CharacterEntity character, PartyEntity party) {

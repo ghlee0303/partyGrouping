@@ -29,6 +29,12 @@ public class CharacterAndDungeonEntity extends BaseEntity {
         this.dungeon = dungeon;
     }
 
+    public CharacterAndDungeonEntity(CharacterEntity character, DungeonEntity dungeon, LocalDateTime clearDate) {
+        this.character = character;
+        this.dungeon = dungeon;
+        this.clearDate = clearDate;
+    }
+
     public Integer getId() {
         return id;
     }

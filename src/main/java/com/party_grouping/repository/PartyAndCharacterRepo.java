@@ -1,10 +1,8 @@
 package com.party_grouping.repository;
 
 import com.party_grouping.dto.PartyAndCharacterDto;
-import com.party_grouping.entity.CharacterEntity;
-import com.party_grouping.entity.PartyAndCharacterEntity;
-import com.party_grouping.entity.PartyEntity;
-import com.party_grouping.entity.QPartyAndCharacterEntity;
+import com.party_grouping.entity.*;
+import com.party_grouping.request.PACRequestDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -12,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,22 +18,32 @@ public class PartyAndCharacterRepo {
     @PersistenceContext
     private EntityManager em;
     private final JPAQueryFactory queryFactory;
-    private final QPartyAndCharacterEntity qPartyAndCharacterEntity = new QPartyAndCharacterEntity("partyAndCharacterEntity");
     private final PartyRepo partyRepo;
     private final CharacterRepo characterRepo;
+    private final QCharacterAndDungeonEntity qCharacterAndDungeonEntity;
+    private final QPartyAndCharacterEntity qPartyAndCharacterEntity;
+    private final QPartyEntity qPartyEntity;
     @Autowired
     private ModelMapper modelMapper;
 
-    public PartyAndCharacterRepo(JPAQueryFactory queryFactory, PartyRepo partyRepo, CharacterRepo characterRepo) {
+    public PartyAndCharacterRepo(JPAQueryFactory queryFactory,
+                                 PartyRepo partyRepo,
+                                 CharacterRepo characterRepo,
+                                 QPartyAndCharacterEntity qPartyAndCharacterEntity,
+                                 QCharacterAndDungeonEntity qCharacterAndDungeonEntity,
+                                 QPartyEntity qPartyEntity) {
         this.queryFactory = queryFactory;
         this.partyRepo = partyRepo;
         this.characterRepo = characterRepo;
+        this.qPartyAndCharacterEntity = qPartyAndCharacterEntity;
+        this.qCharacterAndDungeonEntity = qCharacterAndDungeonEntity;
+        this.qPartyEntity = qPartyEntity;
     }
 
     @Transactional
     public Integer save(PartyAndCharacterDto partyAndCharacterDto) {
-        PartyEntity party = partyRepo.findByIdOptEntity(partyAndCharacterDto.getPartyId()).get();
-        CharacterEntity character = characterRepo.findByIdOptEntity(partyAndCharacterDto.getCharacterId()).get();
+        PartyEntity party = partyRepo.findByIdOptEntity(partyAndCharacterDto.getParty().getId()).get();
+        CharacterEntity character = characterRepo.findByIdOptEntity(partyAndCharacterDto.getCharacter().getId()).get();
         PartyAndCharacterEntity partyAndCharacterEntity = new PartyAndCharacterEntity(
                 partyAndCharacterDto.getPartyNumber(),
                 partyAndCharacterDto.getDescription(),
@@ -47,6 +56,20 @@ public class PartyAndCharacterRepo {
         return partyAndCharacterEntity.getId();
     }
 
+    @Transactional
+    public Integer save(PACRequestDto pacRequestDto) {
+        PartyEntity party = partyRepo.findByIdOptEntity(pacRequestDto.getPartyId()).get();
+        CharacterEntity character = characterRepo.findByIdOptEntity(pacRequestDto.getCharacterId()).get();
+        PartyAndCharacterEntity partyAndCharacterEntity = new PartyAndCharacterEntity(
+                pacRequestDto.getPartyNumber(),
+                character,
+                party);
+
+        em.persist(partyAndCharacterEntity);
+        em.flush();
+
+        return partyAndCharacterEntity.getId();
+    }
     public List<PartyAndCharacterDto> findListDto() {
         List<PartyAndCharacterEntity> partyAndCharacterEntityList = queryFactory
                 .selectFrom(qPartyAndCharacterEntity)

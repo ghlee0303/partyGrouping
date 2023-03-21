@@ -6,6 +6,7 @@ import com.party_grouping.dto.PartyDto;
 import com.party_grouping.entity.*;
 import com.party_grouping.request.PACRequestDto;
 import com.party_grouping.response.dto.PACResponseDto;
+import com.party_grouping.util.DateUtils;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -14,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -122,8 +124,9 @@ public class PartyAndCharacterRepo {
                         .and(qPartyEntity.dungeon.eq(qCharacterAndDungeonEntity.dungeon)))
                 .where(qPartyAndCharacterEntity.party.id.eq(partyId))
                 .fetch();
-        List<PACResponseDto> returnList = new ArrayList<>();
 
+        List<PACResponseDto> returnList = new ArrayList<>();
+        LocalDateTime thursday = DateUtils.getLastThursdayOfWeek();
         result.forEach(tuple -> {
             returnList.add(new PACResponseDto(
                     tuple.get(qPartyAndCharacterEntity.id),
@@ -131,7 +134,8 @@ public class PartyAndCharacterRepo {
                     modelMapper.map(tuple.get(qPartyAndCharacterEntity.character), CharacterDto.class),
                     modelMapper.map(tuple.get(qPartyAndCharacterEntity.party), PartyDto.class),
                     tuple.get(qPartyAndCharacterEntity.partyNumber),
-                    tuple.get(qCharacterAndDungeonEntity.clearDate)));
+                    tuple.get(qCharacterAndDungeonEntity.clearDate),
+                    thursday));
         });
 
         return returnList;

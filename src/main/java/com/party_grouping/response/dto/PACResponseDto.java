@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 public class PACResponseDto {
     private Integer id;
     private String description;
-
     private CharacterDto character;
     private PartyDto party;
     private Integer partyNumber;
@@ -25,16 +24,19 @@ public class PACResponseDto {
     @JsonIgnore
     private LocalDateTime clearDate;
 
-    public PACResponseDto(Integer id, String description, CharacterDto character, PartyDto party, Integer partyNumber, LocalDateTime clearDate) {
+    public PACResponseDto(Integer id,
+                          String description,
+                          CharacterDto character,
+                          PartyDto party,
+                          Integer partyNumber,
+                          LocalDateTime clearDate,
+                          LocalDateTime thursday) {
         this.id = id;
         this.description = description;
         this.character = character;
         this.party = party;
         this.partyNumber = partyNumber;
         this.clearDate = clearDate;
-
-        // 날짜 계산해서 클리어 했는지 아닌지 판별하는 코드 작성할 것
+        this.clear = clearDate != null && thursday.isBefore(clearDate);
     }
-
-
 }

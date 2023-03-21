@@ -1,6 +1,5 @@
 package com.party_grouping.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,11 +11,6 @@ public class GroupAndCharacterDto extends BaseDto {
 
     private CharacterDto character;
     private GroupDto group;
-
-    @JsonProperty("GAC_character_id")
-    private Integer characterId;
-    @JsonProperty("GAC_group_id")
-    private Integer groupId;
 
     public GroupAndCharacterDto() {
     }

@@ -1,6 +1,5 @@
 package com.party_grouping.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.party_grouping.entity.CharacterAndDungeonEntity;
 import com.party_grouping.entity.CharacterEntity;
 import com.party_grouping.entity.DungeonEntity;
@@ -17,11 +16,6 @@ public class CharacterAndDungeonDto extends BaseDto {
 
     private CharacterDto character;
     private DungeonDto dungeon;
-
-    @JsonProperty("CAD_character_id")
-    private Integer characterId;
-    @JsonProperty("CAD_dungeon_id")
-    private Integer dungeonId;
 
     public CharacterAndDungeonDto() {
     }

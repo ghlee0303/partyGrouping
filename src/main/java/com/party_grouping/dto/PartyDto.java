@@ -17,11 +17,6 @@ public class PartyDto extends BaseDto {
     private DungeonDto dungeon;
     private GroupDto group;
 
-    @JsonProperty("party_dungeon_id")
-    private Integer dungeon_id;
-    @JsonProperty("party_group_id")
-    private Integer group_id;
-
     public PartyDto() {
     }
 

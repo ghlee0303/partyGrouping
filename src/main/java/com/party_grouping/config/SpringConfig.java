@@ -1,5 +1,6 @@
 package com.party_grouping.config;
 
+import com.party_grouping.entity.*;
 import com.party_grouping.repository.*;
 import com.party_grouping.service.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -23,7 +24,7 @@ public class SpringConfig {
 
     @Bean
     public CharacterRepo characterRepo() {
-        return new CharacterRepo(jpaQueryFactory());
+        return new CharacterRepo(jpaQueryFactory(), qCharacterEntity());
     }
 
     @Bean
@@ -33,7 +34,7 @@ public class SpringConfig {
 
     @Bean
     public DungeonRepo dungeonRepo() {
-        return new DungeonRepo(jpaQueryFactory());
+        return new DungeonRepo(jpaQueryFactory(), qDungeonEntity());
     }
 
     @Bean
@@ -43,7 +44,7 @@ public class SpringConfig {
 
     @Bean
     public CharacterAndDungeonRepo characterAndDungeonRepo() {
-        return new CharacterAndDungeonRepo(jpaQueryFactory(), characterRepo(), dungeonRepo());
+        return new CharacterAndDungeonRepo(jpaQueryFactory(), characterRepo(), dungeonRepo(), qCharacterAndDungeonEntity());
     }
 
     @Bean
@@ -63,7 +64,13 @@ public class SpringConfig {
 
     @Bean
     public PartyAndCharacterRepo partyAndCharacterRepo() {
-        return new PartyAndCharacterRepo(jpaQueryFactory(), partyRepo(), characterRepo());
+        return new PartyAndCharacterRepo(
+                jpaQueryFactory(),
+                partyRepo(),
+                characterRepo(),
+                qPartyAndCharacterEntity(),
+                qCharacterAndDungeonEntity(),
+                qPartyEntity());
     }
 
     @Bean
@@ -73,7 +80,7 @@ public class SpringConfig {
 
     @Bean
     public GroupRepo groupRepo() {
-        return new GroupRepo(jpaQueryFactory());
+        return new GroupRepo(jpaQueryFactory(), qGroupEntity());
     }
 
     @Bean
@@ -83,12 +90,46 @@ public class SpringConfig {
 
     @Bean
     public GroupAndCharacterRepo groupAndCharacterRepo() {
-        return new GroupAndCharacterRepo(jpaQueryFactory(), groupRepo(), characterRepo());
+        return new GroupAndCharacterRepo(jpaQueryFactory(), groupRepo(), characterRepo(), qGroupAndCharacterEntity());
     }
 
     @Bean
     public GroupAndCharacterService groupAndCharacterService() {
         return new GroupAndCharacterService(groupAndCharacterRepo(), groupRepo(), characterRepo());
+    }
+    @Bean
+    public QCharacterEntity qCharacterEntity() {
+        return new QCharacterEntity("characterEntity");
+    }
+
+    @Bean
+    public QDungeonEntity qDungeonEntity() {
+        return new QDungeonEntity("dungeonEntity");
+    }
+
+    @Bean
+    public QGroupEntity qGroupEntity() {
+        return new QGroupEntity("groupEntity");
+    }
+
+    @Bean
+    public QPartyEntity qPartyEntity() {
+        return new QPartyEntity("partyEntity");
+    }
+
+    @Bean
+    public QCharacterAndDungeonEntity qCharacterAndDungeonEntity(){
+        return new QCharacterAndDungeonEntity("characterAndDungeonEntity");
+    }
+
+    @Bean
+    public QPartyAndCharacterEntity qPartyAndCharacterEntity() {
+        return new QPartyAndCharacterEntity("partyAndCharacterEntity");
+    }
+
+    @Bean
+    public QGroupAndCharacterEntity qGroupAndCharacterEntity() {
+        return new QGroupAndCharacterEntity("groupAndCharacterEntity");
     }
 
     @Bean

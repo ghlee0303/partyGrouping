@@ -19,16 +19,17 @@ public class GroupAndCharacterRepo {
     @PersistenceContext
     private EntityManager em;
     private final JPAQueryFactory queryFactory;
-    private final QGroupAndCharacterEntity qGroupAndCharacterEntity = new QGroupAndCharacterEntity("groupAndCharacterEntity");
+    private final QGroupAndCharacterEntity qGroupAndCharacterEntity;
     private final GroupRepo groupRepo;
     private final CharacterRepo characterRepo;
     @Autowired
     private ModelMapper modelMapper;
 
-    public GroupAndCharacterRepo(JPAQueryFactory queryFactory, GroupRepo groupRepo, CharacterRepo characterRepo) {
+    public GroupAndCharacterRepo(JPAQueryFactory queryFactory, GroupRepo groupRepo, CharacterRepo characterRepo, QGroupAndCharacterEntity qGroupAndCharacterEntity) {
         this.queryFactory = queryFactory;
         this.groupRepo = groupRepo;
         this.characterRepo = characterRepo;
+        this.qGroupAndCharacterEntity = qGroupAndCharacterEntity;
     }
 
     @Transactional

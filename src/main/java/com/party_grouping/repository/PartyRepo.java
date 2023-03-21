@@ -5,6 +5,7 @@ import com.party_grouping.entity.DungeonEntity;
 import com.party_grouping.entity.GroupEntity;
 import com.party_grouping.entity.PartyEntity;
 import com.party_grouping.entity.QPartyEntity;
+import com.party_grouping.request.PartyRequestDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -33,11 +34,25 @@ public class PartyRepo {
 
     @Transactional
     public Integer save(PartyDto partyDto) {
-        GroupEntity group = groupRepo.findByIdOptEntity(partyDto.getGroup_id()).get();
+        GroupEntity group = groupRepo.findByIdOptEntity(partyDto.getGroup().getId()).get();
 
         PartyEntity party = new PartyEntity(
                 partyDto.getName(),
                 partyDto.getEntryTime(),
+                group);
+        em.persist(party);
+        em.flush();
+
+        return group.getId();
+    }
+
+    @Transactional
+    public Integer save(PartyRequestDto partyRequestDto) {
+        GroupEntity group = groupRepo.findByIdOptEntity(partyRequestDto.getGroup_id()).get();
+
+        PartyEntity party = new PartyEntity(
+                partyRequestDto.getName(),
+                partyRequestDto.getEntryTime(),
                 group);
         em.persist(party);
         em.flush();

@@ -7,6 +7,14 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+<style>
+    th {
+        border: 1px solid black;
+    }
+    td {
+        border: 1px solid black;
+    }
+</style>
 <body>
     캐릭터
     <ul th:each="character_data : ${character_data_list}">
@@ -117,6 +125,37 @@
         <p></p>
         <button id="pac">파티캐릭터 추가</button>
     </form>
+
+    <p></p>
+    <form onSubmit="return false;">
+        <label for="cadDungeon">던전선택</label>
+        <select name="cadDungeon" id="cadDungeon">
+            <option value="0">-- 선택 --</option>
+            <option th:each="dungeon_data : ${dungeon_data_list}" th:value="${dungeon_data.id}"
+                    th:utext="${dungeon_data.name}">
+            </option>
+        </select>
+
+        <label for="cadCharacter">캐릭터선택</label>
+        <select name="cadCharacter" id="cadCharacter">
+            <option value="0">-- 선택 --</option>
+            <option th:each="character_data : ${character_data_list}" th:value="${character_data.id}"
+                    th:utext="${character_data.name}">
+            </option>
+        </select>
+
+        <label for="cadClear">클리어</label>
+        <input type="checkbox" id="cadClear">
+
+        <p></p>
+        <button id="cad">등록</button>
+    </form>
+    <p></p>
+
+    <div class="pac-party-list" th:each="party_data : ${party_data_list}" th:value="${party_data.id}"
+         th:utext="${party_data.name}">
+    </div>
+
 </body>
 <script type="importmap">
   {

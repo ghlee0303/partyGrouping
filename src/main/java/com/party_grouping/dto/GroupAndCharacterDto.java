@@ -7,10 +7,10 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class GroupAndCharacterDto extends BaseDto {
-    private Integer id;
+    protected Integer id;
 
-    private CharacterDto character;
-    private GroupDto group;
+    protected CharacterDto character;
+    protected GroupDto group;
 
     public GroupAndCharacterDto() {
     }

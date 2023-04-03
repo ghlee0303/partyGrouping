@@ -12,13 +12,13 @@ public class DungeonDto extends BaseDto {
     // 던전 별 분류
     // 색인과 비슷
     @JsonProperty("dungeon_code")
-    private Integer dungeonCode;
+    protected Integer dungeonCode;
     @JsonProperty("dungeon_name")
-    private String name;
+    protected String name;
     @JsonProperty("dungeon_description")
-    private String description;
+    protected String description;
     @JsonProperty("dungeon_level_limit")
-    private Integer levelLimit;
+    protected Integer levelLimit;
 
     public DungeonDto() {
     }

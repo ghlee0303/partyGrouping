@@ -10,12 +10,12 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class PartyDto extends BaseDto {
-    private Integer id;
-    private String name;
-    private LocalDateTime entryTime;
+    protected Integer id;
+    protected String name;
+    protected LocalDateTime entryTime;
 
-    private DungeonDto dungeon;
-    private GroupDto group;
+    protected DungeonDto dungeon;
+    protected GroupDto group;
 
     public PartyDto() {
     }

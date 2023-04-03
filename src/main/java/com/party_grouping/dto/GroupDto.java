@@ -8,9 +8,9 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class GroupDto extends BaseDto {
-    private Integer id;
+    protected Integer id;
     @JsonProperty("group_name")
-    private String name;
+    protected String name;
 
     public GroupDto() {
     }

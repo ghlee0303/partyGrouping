@@ -11,11 +11,11 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class CharacterAndDungeonDto extends BaseDto {
-    private Integer id;
-    private LocalDateTime clearDate;
+    protected Integer id;
+    protected LocalDateTime clearDate;
 
-    private CharacterDto character;
-    private DungeonDto dungeon;
+    protected CharacterDto character;
+    protected DungeonDto dungeon;
 
     public CharacterAndDungeonDto() {
     }

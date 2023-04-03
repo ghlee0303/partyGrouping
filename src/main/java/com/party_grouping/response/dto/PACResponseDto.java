@@ -2,6 +2,7 @@ package com.party_grouping.response.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.party_grouping.dto.CharacterDto;
+import com.party_grouping.dto.PartyAndCharacterDto;
 import com.party_grouping.dto.PartyDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,12 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PACResponseDto {
-    private Integer id;
-    private String description;
-    private CharacterDto character;
-    private PartyDto party;
-    private Integer partyNumber;
+public class PACResponseDto extends PartyAndCharacterDto {
     private boolean clear;
     @JsonIgnore
     private LocalDateTime clearDate;

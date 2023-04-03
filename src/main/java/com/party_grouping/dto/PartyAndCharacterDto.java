@@ -6,12 +6,12 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class PartyAndCharacterDto extends BaseDto {
-    private Integer id;
-    private String description;
+    protected Integer id;
+    protected String description;
 
-    private CharacterDto character;
-    private PartyDto party;
-    private Integer partyNumber;
+    protected CharacterDto character;
+    protected PartyDto party;
+    protected Integer partyNumber;
 
     public PartyAndCharacterDto() {
     }

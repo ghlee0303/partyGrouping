@@ -1,5 +1,6 @@
 package com.party_grouping.config;
 
+import com.party_grouping.api.DnfAPI;
 import com.party_grouping.entity.*;
 import com.party_grouping.repository.*;
 import com.party_grouping.service.*;
@@ -29,7 +30,7 @@ public class SpringConfig {
 
     @Bean
     public CharacterService characterService() {
-        return new CharacterService(characterRepo());
+        return new CharacterService(characterRepo(), dnfAPI());
     }
 
     @Bean
@@ -140,6 +141,11 @@ public class SpringConfig {
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
+    }
+
+    @Bean
+    public DnfAPI dnfAPI() {
+        return new DnfAPI();
     }
 
 }

@@ -5,6 +5,9 @@ spring:
     password: pwd_root
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  profiles:
+    include: API-KEY
+
   jpa:
     hibernate:
       ddl-auto: none
@@ -12,7 +15,6 @@ spring:
       hibernate:
         # show_sql: true
         format_sql: true
-
 
 logging.level:
   org.hibernate.SQL: false

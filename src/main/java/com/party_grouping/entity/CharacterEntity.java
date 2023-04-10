@@ -11,7 +11,8 @@ public class CharacterEntity extends BaseEntity {
 
     private String name;
     private Integer level;
-    private String apiKey;
+    private Integer fame;
+    private String apiId;
     private String server;
     private String jobName;       // 직업군
     private String jobGrowName;   // 전직
@@ -46,12 +47,20 @@ public class CharacterEntity extends BaseEntity {
         this.level = level;
     }
 
-    public String getApiKey() {
-        return apiKey;
+    public Integer getFame() {
+        return fame;
     }
 
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
+    public void setFame(Integer fame) {
+        this.fame = fame;
+    }
+
+    public String getApiId() {
+        return apiId;
+    }
+
+    public void setApiId(String apiId) {
+        this.apiId = apiId;
     }
 
     public String getServer() {

@@ -10,10 +10,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 public class CharacterDto extends BaseDto {
     protected Integer id;
-    @JsonProperty("character_name")
     protected String name;
-    @JsonProperty("character_level")
     protected Integer level;
+    protected Integer fame;
     protected String apiId;
     protected String server;
     protected String jobName;       // 직업군

@@ -18,6 +18,9 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+	
+	// JSONObject 중복 방지
+	testImplementation.exclude group: 'com.vaadin.external.google', module: 'android-json'
 }
 
 repositories {
@@ -52,6 +55,13 @@ dependencies {
 
 	// ModelMapper
 	implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.4.2'
+
+	// JSON
+	implementation group: 'org.json', name: 'json', version: '20230227'
+
+	// WebClient
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
 }
 tasks.named('test') {
 	useJUnitPlatform()

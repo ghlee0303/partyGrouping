@@ -63,6 +63,7 @@ public class CharacterAndDungeonRepo {
                 .where(qCharacterAndDungeonEntity.id.eq(characterAndDungeonId))
                 .fetchOne();
 
-        return Optional.ofNullable(modelMapper.map(characterAndDungeon, CharacterAndDungeonDto.class));
+        return Optional.ofNullable(characterAndDungeon)
+                .map(entity -> modelMapper.map(entity, CharacterAndDungeonDto.class));
     }
 }

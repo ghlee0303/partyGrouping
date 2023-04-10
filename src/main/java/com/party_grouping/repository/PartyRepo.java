@@ -1,7 +1,6 @@
 package com.party_grouping.repository;
 
 import com.party_grouping.dto.PartyDto;
-import com.party_grouping.entity.DungeonEntity;
 import com.party_grouping.entity.GroupEntity;
 import com.party_grouping.entity.PartyEntity;
 import com.party_grouping.entity.QPartyEntity;
@@ -66,7 +65,8 @@ public class PartyRepo {
                 .where(qPartyEntity.id.eq(partyId))
                 .fetchOne();
 
-        return Optional.ofNullable(modelMapper.map(partyEntity, PartyDto.class));
+        return Optional.ofNullable(partyEntity)
+                .map(entity -> modelMapper.map(entity, PartyDto.class));
     }
 
     public List<PartyDto> findListDto() {

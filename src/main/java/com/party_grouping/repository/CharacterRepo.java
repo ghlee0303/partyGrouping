@@ -28,7 +28,8 @@ public class CharacterRepo {
 
     @Transactional
     public Integer save(CharacterDto characterDto) {
-        CharacterEntity character = new CharacterEntity(characterDto.getName(), characterDto.getLevel());
+        CharacterEntity character = modelMapper.map(characterDto, CharacterEntity.class);
+        System.out.println(character.getName() + " / " + character.getApiId());
         em.persist(character);
         em.flush();
 
@@ -41,10 +42,12 @@ public class CharacterRepo {
                 .where(qCharacterEntity.id.eq(characterId))
                 .fetchOne();
 
-        return Optional.ofNullable(modelMapper.map(characterEntity, CharacterDto.class));
+        return Optional.ofNullable(characterEntity)
+                .map(entity -> modelMapper.map(entity, CharacterDto.class));
     }
 
     public List<CharacterDto> findListDto() {
+        // 나중에 삭제
         List<CharacterEntity> characterEntityList = queryFactory
                 .selectFrom(qCharacterEntity)
                 .fetch();
@@ -53,11 +56,48 @@ public class CharacterRepo {
                 .stream().map(characterEntity -> modelMapper.map(characterEntity, CharacterDto.class)).toList();
     }
 
+    public Optional<CharacterDto> findByApiIdOptDto(String apiId) {
+        CharacterEntity characterEntity = queryFactory
+                .selectFrom(qCharacterEntity)
+                .where(qCharacterEntity.apiId.eq(apiId))
+                .fetchOne();
+
+        return Optional.ofNullable(characterEntity)
+                .map(entity -> modelMapper.map(entity, CharacterDto.class));
+    }
+
     public Optional<CharacterEntity> findByIdOptEntity(Integer characterId) {
         // 반드시 Repo 단에서만 사용할 것
         return Optional.ofNullable(queryFactory
                 .selectFrom(qCharacterEntity)
                 .where(qCharacterEntity.id.eq(characterId))
                 .fetchOne());
+    }
+
+    public Optional<CharacterEntity> findByApiIdOptEntity(String apiId) {
+        // 반드시 Repo 단에서만 사용할 것
+        return Optional.ofNullable(queryFactory
+                .selectFrom(qCharacterEntity)
+                .where(qCharacterEntity.apiId.eq(apiId))
+                .fetchOne());
+    }
+
+    // DB에 캐릭터가 존재한다면 update 및 Dto에 Fame set, 없다면 insert
+    @Transactional
+    public void apiDnfSave(List<CharacterDto> characterDtoList) {
+        for (CharacterDto characterDto : characterDtoList) {
+            Optional<CharacterEntity> findCharacterOpt = findByApiIdOptEntity(characterDto.getApiId());
+
+            findCharacterOpt.ifPresentOrElse(
+                    findCharacter -> {
+                        findCharacter.setName(characterDto.getName());
+                        findCharacter.setLevel(characterDto.getLevel());
+                        findCharacter.setJobGrowName(characterDto.getJobGrowName());
+                        findCharacter.setJobGrowId(characterDto.getJobGrowId());
+                        characterDto.setFame(findCharacter.getFame());
+                    },
+                    () -> save(characterDto)
+            );
+        }
     }
 }

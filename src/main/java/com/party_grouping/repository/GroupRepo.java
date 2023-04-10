@@ -1,5 +1,6 @@
 package com.party_grouping.repository;
 
+import com.party_grouping.dto.GroupAndCharacterDto;
 import com.party_grouping.dto.GroupDto;
 import com.party_grouping.entity.GroupEntity;
 import com.party_grouping.entity.QGroupEntity;
@@ -43,7 +44,8 @@ public class GroupRepo {
                 .where(qGroupEntity.id.eq(groupId))
                 .fetchOne();
 
-        return Optional.ofNullable(modelMapper.map(groupEntity, GroupDto.class));
+        return Optional.ofNullable(groupEntity)
+                .map(entity -> modelMapper.map(entity, GroupDto.class));
     }
 
     public List<GroupDto> findListDto() {

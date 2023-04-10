@@ -1,6 +1,6 @@
 package com.party_grouping.config;
 
-import com.party_grouping.api.DnfAPI;
+import com.party_grouping.api.ApiDnF;
 import com.party_grouping.entity.*;
 import com.party_grouping.repository.*;
 import com.party_grouping.service.*;
@@ -144,8 +144,8 @@ public class SpringConfig {
     }
 
     @Bean
-    public DnfAPI dnfAPI() {
-        return new DnfAPI();
+    public ApiDnF dnfAPI() {
+        return new ApiDnF();
     }
 
 }

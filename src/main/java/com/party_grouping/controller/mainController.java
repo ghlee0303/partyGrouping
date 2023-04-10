@@ -32,6 +32,7 @@ public class mainController {
 
     @GetMapping("/")
     public String getMain() {
+        characterService.saveByApiDnf("cain", "무개무개");
 
         return "index";
     }

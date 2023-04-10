@@ -1,6 +1,7 @@
 package com.party_grouping.repository;
 
 import com.party_grouping.dto.CharacterAndDungeonDto;
+import com.party_grouping.dto.DungeonDto;
 import com.party_grouping.dto.GroupAndCharacterDto;
 import com.party_grouping.entity.CharacterEntity;
 import com.party_grouping.entity.GroupAndCharacterEntity;
@@ -50,6 +51,7 @@ public class GroupAndCharacterRepo {
                 .where(qGroupAndCharacterEntity.id.eq(groupAndCharacterId))
                 .fetchOne();
 
-        return Optional.ofNullable(modelMapper.map(groupAndCharacter, GroupAndCharacterDto.class));
+        return Optional.ofNullable(groupAndCharacter)
+                .map(entity -> modelMapper.map(entity, GroupAndCharacterDto.class));
     }
 }

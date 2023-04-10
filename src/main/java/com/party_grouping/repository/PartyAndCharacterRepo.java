@@ -1,6 +1,7 @@
 package com.party_grouping.repository;
 
 import com.party_grouping.dto.CharacterDto;
+import com.party_grouping.dto.GroupDto;
 import com.party_grouping.dto.PartyAndCharacterDto;
 import com.party_grouping.dto.PartyDto;
 import com.party_grouping.entity.*;
@@ -106,7 +107,8 @@ public class PartyAndCharacterRepo {
                 .where(qPartyAndCharacterEntity.id.eq(partyAndCharacterId))
                 .fetchOne();
 
-        return Optional.ofNullable(modelMapper.map(partyAndCharacterEntity, PartyAndCharacterDto.class));
+        return Optional.ofNullable(partyAndCharacterEntity)
+                .map(entity -> modelMapper.map(entity, PartyAndCharacterDto.class));
     }
 
     public List<PACResponseDto> findByPartyIdWithClearDateListResDto(Integer partyId) {

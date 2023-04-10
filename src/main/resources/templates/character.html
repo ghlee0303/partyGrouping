@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<html lang="kor">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<div class="list-group">
+
+  <form onSubmit="return false;">
+    <label for="characterName">캐릭터명</label>
+    <input type="text" id="characterName">
+
+    <button id="characterSearch">캐릭터 검색</button>
+  </form>
+  <div id="list_body">
+
+  </div>
+</div>
+</body>
+<script type="importmap">
+  {
+    "imports": {
+      "fetchHandler": "/script/module/fetchHandler.js?v=1.0"
+    }
+  }
+</script>
+<script type="module" src="/script/character.js"></script>
+</html>

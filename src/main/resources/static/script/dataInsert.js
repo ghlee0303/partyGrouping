@@ -174,7 +174,7 @@ function partyTable(pac_tag, pac_data_list, partyNumber) {
         tableBodyTDLevel.innerText = pac_data.character.character_level;
         tableBodyTR.appendChild(tableBodyTDLevel);
 
-        tableBodyTDId.innerText = pac_data.character.id;
+        tableBodyTDId.innerText = pac_data.character.clear;
         tableBodyTR.appendChild(tableBodyTDId);
 
         tableBody.appendChild(tableBodyTR);

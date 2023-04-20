@@ -20,12 +20,4 @@ public class CharacterAndDungeonDto extends BaseDto {
     public CharacterAndDungeonDto() {
     }
 
-    public CharacterAndDungeonEntity toEntity() {
-        return new CharacterAndDungeonEntity(character.toEntity(), dungeon.toEntity());
-    }
-
-    public CharacterAndDungeonEntity toEntity(CharacterEntity characterEntity, DungeonEntity dungeonEntity) {
-        return new CharacterAndDungeonEntity(characterEntity, dungeonEntity);
-    }
-
 }

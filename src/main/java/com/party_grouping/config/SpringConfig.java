@@ -30,7 +30,7 @@ public class SpringConfig {
 
     @Bean
     public CharacterService characterService() {
-        return new CharacterService(characterRepo(), dnfAPI());
+        return new CharacterService(characterRepo(), apiDnf());
     }
 
     @Bean
@@ -42,6 +42,17 @@ public class SpringConfig {
     public DungeonService dungeonService() {
         return new DungeonService(dungeonRepo());
     }
+
+    @Bean
+    public ExchangeRepo exchangeRepo() {
+        return new ExchangeRepo(jpaQueryFactory(), qExchangeEntity(), characterRepo());
+    }
+
+    @Bean
+    public ExchangeService exchangeService() {
+        return new ExchangeService(exchangeRepo(), characterRepo(), apiDnf());
+    }
+
 
     @Bean
     public CharacterAndDungeonRepo characterAndDungeonRepo() {
@@ -109,6 +120,11 @@ public class SpringConfig {
     }
 
     @Bean
+    public QExchangeEntity qExchangeEntity() {
+        return new QExchangeEntity("exchangeEntity");
+    }
+
+    @Bean
     public QGroupEntity qGroupEntity() {
         return new QGroupEntity("groupEntity");
     }
@@ -144,7 +160,7 @@ public class SpringConfig {
     }
 
     @Bean
-    public ApiDnF dnfAPI() {
+    public ApiDnF apiDnf() {
         return new ApiDnF();
     }
 

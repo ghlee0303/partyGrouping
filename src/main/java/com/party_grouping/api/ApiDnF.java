@@ -11,7 +11,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ApiDnF {
     @Value("${dnf-api-key}")
@@ -48,23 +50,67 @@ public class ApiDnF {
                 });
     }
 
-    public void callCharacterFame(String server, String characterApiId) {
-        String url = String.format("https://api.neople.co.kr/df/servers/%s/characters/%s/status?apikey=%s", server, characterApiId, apiKey);
-        Mono<String> characterFame = requestAPIDnF(url)
+    public CharacterDto callCharacterStatus(String server, String characterApiId) {
+        String url = String.format("servers/%s/characters/%s/status?apikey=%s", server, characterApiId, apiKey);
+        Mono<String> characterStatus = requestAPIDnF(url)
                 .bodyToMono(String.class);
 
-        System.out.println(characterFame.block());
+        JSONObject jsonObject = new JSONObject(characterStatus.block());
+
+        if (jsonObject.getJSONArray("status").isEmpty()){
+            throw new ApiException("캐릭터가 잠금 상태입니다.", 404);
+        }
+
+        int fame = jsonObject.getJSONArray("status").getJSONObject(16).getInt("value");
+        String adventureName = jsonObject.getString("adventureName");
+
+        CharacterDto characterDto = setCharacterDto(jsonObject);
+        characterDto.setFame(fame);
+        characterDto.setAdventureName(adventureName);
+        characterDto.setServer(server);
+
+        Buff buff = callBuffSkill(server, characterApiId);
+        characterDto.setBuffLevel(buff.buffLevel);
+        characterDto.setBuffName(buff.buffName);
+        characterDto.setBuffId(buff.buffId);
+        characterDto.setBuffer(buff.buffer);
+        System.out.println(characterDto);
+
+        return characterDto;
     }
 
-    public List<CharacterDto> callCharacter(String server, String name) {
-        String url = String.format("/servers/%s/characters?characterName=%s&wordType=full&apikey=%s", server, name, apiKey);
+    public List<CharacterDto> callCharacter(String name) {
+        String url = String.format("/servers/all/characters?characterName=%s&wordType=full&apikey=%s", name, apiKey);
         Mono<String> characterData = requestAPIDnF(url)
                 .bodyToMono(String.class);
 
-        return parsingCharacterJson(characterData.block());
+        return parsingCharacterListJson(characterData.block());
     }
 
-    private List<CharacterDto> parsingCharacterJson(String response) {
+    public Buff callBuffSkill(String server, String characterApiId) {
+        String url = String.format("servers/%s/characters/%s/skill/buff/equip/equipment?apikey=%s", server, characterApiId, apiKey);
+        Mono<String> characterData = requestAPIDnF(url)
+                .bodyToMono(String.class);
+
+        JSONObject buff = new JSONObject(characterData.block())
+                .getJSONObject("skill")
+                .optJSONObject("buff");
+
+        if (buff == null) {
+            throw new ApiException("버프강화를 선택해주세요.", 404);
+        }
+
+        JSONObject skillInfo = buff
+                .getJSONObject("skillInfo");
+
+        String buffName = skillInfo.getString("name");
+        String buffId = skillInfo.getString("skillId");
+        int buffLevel = skillInfo.getJSONObject("option").getInt("level");
+
+        return new Buff(buffLevel, buffName, buffId);
+    }
+
+    private List<CharacterDto> parsingCharacterListJson(String response) {
         List<CharacterDto> characterDtoList = new ArrayList<>();
 
         JSONArray jsonArray = new JSONObject(response)
@@ -82,15 +128,36 @@ public class ApiDnF {
     }
 
     private CharacterDto setCharacterDto(JSONObject json) {
-        return new CharacterDto(
-                json.getString("characterName"),
-                json.getInt("level"),
-                json.getString("characterId"),
-                json.getString("serverId"),
-                json.getString("jobName"),
-                json.getString("jobGrowName"),
-                json.getString("jobId"),
-                json.getString("jobGrowId")
-        );
+        return CharacterDto.builder()
+                .name(json.getString("characterName"))
+                .level(json.getInt("level"))
+                .apiId(json.getString("characterId"))
+                .server(json.optString("serverId"))
+                .jobName(json.getString("jobName"))
+                .jobGrowName(json.getString("jobGrowName"))
+                .jobId(json.getString("jobId"))
+                .jobGrowId(json.getString("jobGrowId"))
+                .build();
+    }
+
+    private static class Buff {
+        int buffLevel;
+        String buffName;
+        String buffId;
+        boolean buffer;
+
+        public Buff(int buffLevel, String buffName, String buffId) {
+            this.buffLevel = buffLevel;
+            this.buffName = buffName;
+            this.buffId = buffId;
+            this.buffer = isBuffer(buffName);
+        }
+
+        private boolean isBuffer(String buffName) {
+            return buffName.equals("용맹의 축복")
+                    || buffName.equals("영광의 축복")
+                    || buffName.equals("러블리 템포")
+                    || buffName.equals("금단의 저주");
+        }
     }
 }

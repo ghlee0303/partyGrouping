@@ -3,6 +3,7 @@ package com.party_grouping.repository;
 import com.party_grouping.dto.CharacterDto;
 import com.party_grouping.entity.CharacterEntity;
 import com.party_grouping.entity.QCharacterEntity;
+import com.party_grouping.exception.ApiException;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -29,7 +30,6 @@ public class CharacterRepo {
     @Transactional
     public Integer save(CharacterDto characterDto) {
         CharacterEntity character = modelMapper.map(characterDto, CharacterEntity.class);
-        System.out.println(character.getName() + " / " + character.getApiId());
         em.persist(character);
         em.flush();
 
@@ -44,16 +44,6 @@ public class CharacterRepo {
 
         return Optional.ofNullable(characterEntity)
                 .map(entity -> modelMapper.map(entity, CharacterDto.class));
-    }
-
-    public List<CharacterDto> findListDto() {
-        // 나중에 삭제
-        List<CharacterEntity> characterEntityList = queryFactory
-                .selectFrom(qCharacterEntity)
-                .fetch();
-
-        return characterEntityList
-                .stream().map(characterEntity -> modelMapper.map(characterEntity, CharacterDto.class)).toList();
     }
 
     public Optional<CharacterDto> findByApiIdOptDto(String apiId) {
@@ -84,20 +74,18 @@ public class CharacterRepo {
 
     // DB에 캐릭터가 존재한다면 update 및 Dto에 Fame set, 없다면 insert
     @Transactional
-    public void apiDnfSave(List<CharacterDto> characterDtoList) {
-        for (CharacterDto characterDto : characterDtoList) {
-            Optional<CharacterEntity> findCharacterOpt = findByApiIdOptEntity(characterDto.getApiId());
+    public void characterStatus(CharacterDto characterDto) {
+        Optional<CharacterEntity> findCharacterOpt = findByApiIdOptEntity(characterDto.getApiId());
 
-            findCharacterOpt.ifPresentOrElse(
-                    findCharacter -> {
-                        findCharacter.setName(characterDto.getName());
-                        findCharacter.setLevel(characterDto.getLevel());
-                        findCharacter.setJobGrowName(characterDto.getJobGrowName());
-                        findCharacter.setJobGrowId(characterDto.getJobGrowId());
-                        characterDto.setFame(findCharacter.getFame());
-                    },
-                    () -> save(characterDto)
-            );
-        }
+        findCharacterOpt.ifPresentOrElse(
+                findCharacter -> {
+                    findCharacter.setName(characterDto.getName());
+                    findCharacter.setLevel(characterDto.getLevel());
+                    findCharacter.setJobGrowName(characterDto.getJobGrowName());
+                    findCharacter.setJobGrowId(characterDto.getJobGrowId());
+                    characterDto.setFame(findCharacter.getFame());
+                },
+                () -> save(characterDto)
+        );
     }
 }

@@ -2,20 +2,22 @@ package com.party_grouping.service;
 
 import com.party_grouping.api.ApiDnF;
 import com.party_grouping.dto.CharacterDto;
+import com.party_grouping.exception.ApiException;
 import com.party_grouping.repository.CharacterRepo;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Transactional
 public class CharacterService {
     private final CharacterRepo characterRepo;
-    private ApiDnF APIDnF;
+    private ApiDnF apiDnF;
 
-    public CharacterService(CharacterRepo characterRepo, ApiDnF APIDnF) {
+    public CharacterService(CharacterRepo characterRepo, ApiDnF apiDnF) {
         this.characterRepo = characterRepo;
-        this.APIDnF = APIDnF;
+        this.apiDnF = apiDnF;
     }
 
     public Integer save(CharacterDto characterDto) {
@@ -26,14 +28,23 @@ public class CharacterService {
         return characterRepo.findByIdOptDto(characterId);
     }
 
-    public List<CharacterDto> characterDtoList() {
-        return characterRepo.findListDto();
+    public CharacterDto characterStatus(String server, String characterApiId) {
+        CharacterDto characterDto = apiDnF.callCharacterStatus(server, characterApiId);
+
+        characterRepo.characterStatus(characterDto);
+        return characterDto;
     }
 
-    public List<CharacterDto> saveByApiDnf(String server, String name) {
-        List<CharacterDto> dnfCharacterDtoList = APIDnF.callCharacter(server, name);
-        characterRepo.apiDnfSave(dnfCharacterDtoList);
+    public List<CharacterDto> characterSearch(String name) {
+        List<CharacterDto> apiCharacterDtoList = apiDnF.callCharacter(name);
 
-        return dnfCharacterDtoList;
+        for (CharacterDto apiCharacterDto : apiCharacterDtoList) {
+            Optional<CharacterDto> characterDtoOpt = characterRepo.findByApiIdOptDto(apiCharacterDto.getApiId());
+            characterDtoOpt.ifPresent(dbCharacterDto -> {
+                apiCharacterDto.setFame(dbCharacterDto.getFame());
+                apiCharacterDto.setAdventureName(dbCharacterDto.getAdventureName());
+            });
+        }
+        return apiCharacterDtoList;
     }
 }

@@ -14,10 +14,15 @@ public class CharacterEntity extends BaseEntity {
     private Integer fame;
     private String apiId;
     private String server;
+    private String adventureName;
     private String jobName;       // 직업군
     private String jobGrowName;   // 전직
     private String jobId;         // 직업군 id
     private String jobGrowId;     // 전직 id
+    private int buffLevel;
+    private String buffName;
+    private String buffId;
+    private boolean buffer;
 
     public CharacterEntity() {
     }
@@ -71,6 +76,14 @@ public class CharacterEntity extends BaseEntity {
         this.server = server;
     }
 
+    public String getAdventureName() {
+        return adventureName;
+    }
+
+    public void setAdventureName(String adventureName) {
+        this.adventureName = adventureName;
+    }
+
     public String getJobName() {
         return jobName;
     }
@@ -101,5 +114,37 @@ public class CharacterEntity extends BaseEntity {
 
     public void setJobGrowId(String jobGrowId) {
         this.jobGrowId = jobGrowId;
+    }
+
+    public int getBuffLevel() {
+        return buffLevel;
+    }
+
+    public void setBuffLevel(int buffLevel) {
+        this.buffLevel = buffLevel;
+    }
+
+    public String getBuffName() {
+        return buffName;
+    }
+
+    public void setBuffName(String buffName) {
+        this.buffName = buffName;
+    }
+
+    public String getBuffId() {
+        return buffId;
+    }
+
+    public void setBuffId(String buffId) {
+        this.buffId = buffId;
+    }
+
+    public boolean isBuffer() {
+        return buffer;
+    }
+
+    public void setBuffer(boolean buffer) {
+        this.buffer = buffer;
     }
 }

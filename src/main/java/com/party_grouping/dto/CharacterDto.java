@@ -1,5 +1,6 @@
 package com.party_grouping.dto;
 
+import com.party_grouping.api.Buff;
 import com.party_grouping.entity.CharacterEntity;
 import lombok.*;
 
@@ -24,5 +25,13 @@ public class CharacterDto extends BaseDto {
     protected String buffName;
     protected String buffId;
     protected boolean buffer;
+
+    public void setBuff(Buff buff) {
+        this.buffLevel = buff.getBuffLevel();
+        this.buffName = buff.getBuffName();
+        this.buffId = buff.getBuffId();
+        this.buffer = buff.isBuffer();
+
+    }
 
 }

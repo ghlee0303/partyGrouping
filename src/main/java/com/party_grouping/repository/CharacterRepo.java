@@ -46,10 +46,10 @@ public class CharacterRepo {
                 .map(entity -> modelMapper.map(entity, CharacterDto.class));
     }
 
-    public Optional<CharacterDto> findByApiIdOptDto(String apiId) {
+    public Optional<CharacterDto> findByApiIdOptDto(String server, String apiId) {
         CharacterEntity characterEntity = queryFactory
                 .selectFrom(qCharacterEntity)
-                .where(qCharacterEntity.apiId.eq(apiId))
+                .where(qCharacterEntity.apiId.eq(apiId), qCharacterEntity.server.eq(server))
                 .fetchOne();
 
         return Optional.ofNullable(characterEntity)
@@ -64,18 +64,18 @@ public class CharacterRepo {
                 .fetchOne());
     }
 
-    public Optional<CharacterEntity> findByApiIdOptEntity(String apiId) {
+    public Optional<CharacterEntity> findByApiIdOptEntity(String server, String apiId) {
         // 반드시 Repo 단에서만 사용할 것
         return Optional.ofNullable(queryFactory
                 .selectFrom(qCharacterEntity)
-                .where(qCharacterEntity.apiId.eq(apiId))
+                .where(qCharacterEntity.apiId.eq(apiId), qCharacterEntity.server.eq(server))
                 .fetchOne());
     }
 
     // DB에 캐릭터가 존재한다면 update 및 Dto에 Fame set, 없다면 insert
     @Transactional
     public void characterStatus(CharacterDto characterDto) {
-        Optional<CharacterEntity> findCharacterOpt = findByApiIdOptEntity(characterDto.getApiId());
+        Optional<CharacterEntity> findCharacterOpt = findByApiIdOptEntity(characterDto.getApiId(), characterDto.getServer());
 
         findCharacterOpt.ifPresentOrElse(
                 findCharacter -> {

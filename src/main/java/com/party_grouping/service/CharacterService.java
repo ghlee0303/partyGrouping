@@ -24,10 +24,6 @@ public class CharacterService {
         return characterRepo.save(characterDto);
     }
 
-    public Optional<CharacterDto> characterDtoOpt(Integer characterId) {
-        return characterRepo.findByIdOptDto(characterId);
-    }
-
     public CharacterDto characterStatus(String server, String characterApiId) {
         CharacterDto characterDto = apiDnF.callCharacterStatus(server, characterApiId);
 
@@ -35,11 +31,11 @@ public class CharacterService {
         return characterDto;
     }
 
-    public List<CharacterDto> characterSearch(String name) {
-        List<CharacterDto> apiCharacterDtoList = apiDnF.callCharacter(name);
-
+    public List<CharacterDto> characterSearch(String name, String type) {
+        List<CharacterDto> apiCharacterDtoList = apiDnF.callCharacter(name, type);
+        // 모험단, 서버 분리
         for (CharacterDto apiCharacterDto : apiCharacterDtoList) {
-            Optional<CharacterDto> characterDtoOpt = characterRepo.findByApiIdOptDto(apiCharacterDto.getApiId());
+            Optional<CharacterDto> characterDtoOpt = characterRepo.findByApiIdOptDto(apiCharacterDto.getServer(), apiCharacterDto.getApiId());
             characterDtoOpt.ifPresent(dbCharacterDto -> {
                 apiCharacterDto.setFame(dbCharacterDto.getFame());
                 apiCharacterDto.setAdventureName(dbCharacterDto.getAdventureName());

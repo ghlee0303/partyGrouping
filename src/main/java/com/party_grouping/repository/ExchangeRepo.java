@@ -1,12 +1,9 @@
 package com.party_grouping.repository;
 
-import com.party_grouping.dto.CharacterDto;
 import com.party_grouping.dto.ExchangeDto;
 import com.party_grouping.entity.CharacterEntity;
 import com.party_grouping.entity.ExchangeEntity;
-import com.party_grouping.entity.QDungeonEntity;
 import com.party_grouping.entity.QExchangeEntity;
-import com.party_grouping.exception.ApiException;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -33,30 +30,20 @@ public class ExchangeRepo {
     }
 
     @Transactional
-    public String save(ExchangeDto exchangeDto) {
-        System.out.println(exchangeDto);
-        ExchangeEntity exchangeEntity = toEntity(exchangeDto);
+    public String save(List<CharacterEntity> characterEntityList) {
+        ExchangeEntity exchangeEntity = createEntity(characterEntityList);
         em.persist(exchangeEntity);
         em.flush();
 
         return exchangeEntity.getExchangeKey();
     }
-
-    private ExchangeEntity toEntity(ExchangeDto exchangeDto) {
-        CharacterEntity character1 = characterRepo.findByApiIdOptEntity(exchangeDto.getCharacter1().getApiId())
-                .orElseThrow(() -> { throw new ApiException("해당 캐릭터를 찾을 수 없습니다.", 404); });
-        CharacterEntity character2 = characterRepo.findByApiIdOptEntity(exchangeDto.getCharacter2().getApiId())
-                .orElseThrow(() -> { throw new ApiException("해당 캐릭터를 찾을 수 없습니다.", 404); });
-        CharacterEntity character3 = characterRepo.findByApiIdOptEntity(exchangeDto.getCharacter3().getApiId())
-                .orElseThrow(() -> { throw new ApiException("해당 캐릭터를 찾을 수 없습니다.", 404); });
-        CharacterEntity character4 = characterRepo.findByApiIdOptEntity(exchangeDto.getCharacter4().getApiId())
-                .orElseThrow(() -> { throw new ApiException("해당 캐릭터를 찾을 수 없습니다.", 404); });
+    private ExchangeEntity createEntity(List<CharacterEntity> characterEntityList) {
 
         return ExchangeEntity.builder()
-                .character1(character1)
-                .character2(character2)
-                .character3(character3)
-                .character4(character4)
+                .character1(characterEntityList.get(0))
+                .character2(characterEntityList.get(1))
+                .character3(characterEntityList.get(2))
+                .character4(characterEntityList.get(3))
                 .exchangeKey(generateExchangeKey())
                 .build();
     }

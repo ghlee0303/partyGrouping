@@ -1,5 +1,6 @@
 package com.party_grouping.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.party_grouping.api.ApiDnF;
 import com.party_grouping.entity.*;
 import com.party_grouping.repository.*;
@@ -157,6 +158,11 @@ public class SpringConfig {
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
     }
 
     @Bean

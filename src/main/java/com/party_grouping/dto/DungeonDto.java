@@ -1,5 +1,6 @@
 package com.party_grouping.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.party_grouping.entity.DungeonEntity;
 import lombok.Data;
@@ -8,6 +9,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class DungeonDto extends BaseDto {
+    @JsonIgnore
     private Integer id;
     // 던전 별 분류
     // 색인과 비슷

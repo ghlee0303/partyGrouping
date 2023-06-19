@@ -62,6 +62,18 @@ dependencies {
 	// WebClient
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
+	// JUnit5
+	testImplementation('org.junit.platform:junit-platform-launcher:1.9.2')
+	testImplementation('org.junit.jupiter:junit-jupiter:5.9.2')
+
+	// Jackson의 LocalDateTime 호환성 추가
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+	// thymeleaf layout
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+
+	// ConfigurationProperties 어노테이션
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 tasks.named('test') {
 	useJUnitPlatform()

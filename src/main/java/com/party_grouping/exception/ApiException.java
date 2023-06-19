@@ -1,27 +1,53 @@
 package com.party_grouping.exception;
 
-import org.json.JSONObject;
-import org.springframework.http.ResponseEntity;
-
-import java.util.Map;
-
 public class ApiException extends RuntimeException {
-    protected Integer err_code;
+    private int status;
+    private String code;
+    private ErrorCode errorCode;
+    private ApiException apiException;
 
     public ApiException() {
     }
 
-    public ApiException(String message, Integer err_code) {
+    public ApiException(int status) {
+        this.status = status;
+    }
+
+    public ApiException(String message, int status) {
         super(message);
-        this.err_code = err_code;
+        this.status = status;
     }
 
-
-    public Integer getErr_code() {
-        return err_code;
+    public ApiException(String message, String code, int err_code) {
+        super(message);
+        this.status = err_code;
+        this.code = code;
     }
 
-    public void setErr_code(Integer err_code) {
-        this.err_code = err_code;
+    public ApiException(ErrorCode errorCode) {
+        super(errorCode.getMessage());
+        this.status = errorCode.getStatus();
+        this.code = errorCode.getCode();
+        this.errorCode = errorCode;
+    }
+
+    public ApiException(ErrorCode errorCode, ApiException apiException) {
+        super(errorCode.getMessage());
+        this.status = errorCode.getStatus();
+        this.code = errorCode.getCode();
+        this.errorCode = errorCode;
+        this.apiException = apiException;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public ErrorCode getErrorCode() {
+        return errorCode;
     }
 }

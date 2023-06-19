@@ -4,16 +4,20 @@ import com.party_grouping.dto.GroupAndCharacterDto;
 import com.party_grouping.repository.CharacterRepo;
 import com.party_grouping.repository.GroupAndCharacterRepo;
 import com.party_grouping.repository.GroupRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Transactional
+@Service
 public class GroupAndCharacterService {
     private final GroupAndCharacterRepo groupAndCharacterRepo;
     private final GroupRepo groupRepo;
     private final CharacterRepo characterRepo;
 
+    @Autowired
     public GroupAndCharacterService(GroupAndCharacterRepo groupAndCharacterRepo, GroupRepo groupRepo, CharacterRepo characterRepo) {
         this.groupAndCharacterRepo = groupAndCharacterRepo;
         this.groupRepo = groupRepo;

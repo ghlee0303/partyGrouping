@@ -17,21 +17,14 @@ function httpStatusHandler(res) {
                 resolve(res.data);
                 break;
             case 4:
-                reject(new MemoAPIError(res));
+                reject(res);
                 break;
         }
     });
-}
-
-/**
- * promise 내부의 promise에서 에러 처리 시 사용함
- */
-function fetchErrorThrow(error) {
-    throw error;
 }
 
 function httpsStatusClass(httpsStatus) {
     return Math.floor(httpsStatus/100);
 }
 
-export {toJsonPromise, httpStatusHandler, fetchErrorThrow};
+export {toJsonPromise, httpStatusHandler};

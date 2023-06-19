@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<th:block th:fragment="headFragment">
+  <head>
+    <title>test project</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <style data-tag="default-style-sheet">
+      html {
+        font-family: Inter;
+        font-size: 16px;
+      }
+
+      body {
+        font-weight: 400;
+        font-style:normal;
+        text-decoration: none;
+        text-transform: none;
+        letter-spacing: normal;
+        line-height: 1.15;
+        color: var(--dl-color-gray-black);
+        background-color: var(--dl-color-gray-white);
+      }
+
+      .border-bl {
+        border: 1px solid black;
+      }
+
+      .line-mid {
+        border: 1px solid grey;
+        width: 80%;
+      }
+    </style>
+    <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&amp;display=swap"
+            data-tag="font"
+    />
+    <link rel="stylesheet" href="./css/basic.css" />
+    <link href="./css/common_style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  </head>
+</th:block>
+<body>
+<div>
+  <button id="testBtn"> test </button>
+  <!-- Modal -->
+  <div class="modal fade" id="exchangeModal" tabindex="-1" aria-labelledby="exchangeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exchangeModalLabel">Modal title</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <div id="container-modal">
+            <div id="container-search">
+              <select id="search-select">
+                <option value="all">전체</option>
+                <option value="adventure">모험단</option>
+                <option value="cain">카인</option>
+                <option value="diregie">디레지에</option>
+                <option value="siroco">시로코</option>
+                <option value="prey">프레이</option>
+                <option value="casillas">카시야스</option>
+                <option value="hilder">힐더</option>
+                <option value="anton">안톤</option>
+                <option value="bakal">바칼</option>
+              </select>
+              <input
+                      type="text"
+                      placeholder="placeholder"
+                      id="search-input"
+                      class="input"
+              />
+              <button class="button">검색</button>
+            </div>
+
+            <div id="searched" class="container-character"> </div>
+
+            <div class="container-exchange">
+              <span class="exchange-adventure"></span>
+              <div class="exchange-characters"> </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary modal-btn" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary modal-btn">Save changes</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div id="container">
+    <div id="features">
+      <th:block th:replace="fragments/header :: headerFragment"></th:block>
+
+      <!-- Button trigger modal -->
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exchangeModal">
+        새 교환파티 생성
+      </button>
+
+      <div class="container-party">
+
+      </div>
+
+    </div>
+  </div>
+</div>
+</body>
+<script src="/script/module/characters.js"></script>
+<script src="/script/module/cookie.js"></script>
+<script src="/script/module/fetch.js"></script>
+<script src="/script/module/item.js"></script>
+<script src="/script/exchange.js"></script>
+<script>
+</script>
+</html>

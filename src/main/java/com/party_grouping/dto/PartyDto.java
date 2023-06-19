@@ -1,5 +1,6 @@
 package com.party_grouping.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.party_grouping.entity.GroupEntity;
 import lombok.Data;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class PartyDto extends BaseDto {
+    @JsonIgnore
     protected Integer id;
     protected String name;
     protected LocalDateTime entryTime;

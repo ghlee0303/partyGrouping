@@ -13,12 +13,12 @@ public class ExchangeRequestDto {
     }
 
     public ExchangeRequestDto(JSONObject jsonObject) {
+        System.out.println(jsonObject);
         this.server = jsonObject.getString("server");
         this.apiIdList = new ArrayList<>();
 
         for (int i = 0; i < 4; i++) {
-            JSONObject apiIdObject = jsonObject.getJSONArray("apiIdList").getJSONObject(i);
-            String apiId = apiIdObject.getString("apiId");
+            String apiId = jsonObject.getJSONArray("apiIdList").getString(i);
             apiIdList.add(apiId);
         }
     }

@@ -4,6 +4,8 @@ import com.party_grouping.dto.PartyDto;
 import com.party_grouping.entity.PartyEntity;
 import com.party_grouping.repository.PartyRepo;
 import com.party_grouping.request.PartyRequestDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -11,9 +13,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Transactional
+@Service
 public class PartyService {
     private final PartyRepo partyRepo;
 
+    @Autowired
     public PartyService(PartyRepo partyRepo) {
         this.partyRepo = partyRepo;
     }

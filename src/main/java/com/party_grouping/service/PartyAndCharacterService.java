@@ -6,6 +6,8 @@ import com.party_grouping.repository.PartyAndCharacterRepo;
 import com.party_grouping.repository.PartyRepo;
 import com.party_grouping.request.PACRequestDto;
 import com.party_grouping.response.dto.PACResponseDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -13,11 +15,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Transactional
+@Service
 public class PartyAndCharacterService {
     private final PartyAndCharacterRepo partyAndCharacterRepo;
     private final PartyRepo partyRepo;
     private final CharacterRepo characterRepo;
 
+    @Autowired
     public PartyAndCharacterService(PartyAndCharacterRepo partyAndCharacterRepo, PartyRepo partyRepo, CharacterRepo characterRepo) {
         this.partyAndCharacterRepo = partyAndCharacterRepo;
         this.partyRepo = partyRepo;

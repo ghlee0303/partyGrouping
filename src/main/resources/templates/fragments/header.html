@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<header data-role="Header" id="header" th:fragment="headerFragment">
+  <h1 id="home_title">
+    던파티
+  </h1>
+  <div id="btn-header-group">
+    <button class="btn-header button">
+      <a href="/character" class="text">캐릭터 검색</a>
+    </button>
+    <button class="btn-header button">
+      <a href="/exchange" class="text">교환 파티</a>
+    </button>
+    <button class="btn-header button">
+      <a href="#" class="text">그룹</a>
+    </button>
+  </div>
+  <div id="btn-login-group">
+  </div>
+</header>
+</body>
+</html>

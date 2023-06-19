@@ -10,11 +10,14 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     properties:
       hibernate:
         # show_sql: true
         format_sql: true
+
+  config:
+    import: classpath:/character.yml
 
 logging.level:
   org.hibernate.SQL: false
@@ -28,3 +31,4 @@ server:
       enabled=false:
 # org.hibernate.type: trace
 # 파라미터 바인딩 된 것 까지 볼 수 있음
+

@@ -6,7 +6,9 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "exchange_table")
+@Table(name = "exchange_table", indexes = {
+        @Index(name = "exchange_index_persistentKey", columnList = "persistentKey"),
+        @Index(name = "exchange_index_exchangeKey", columnList = "exchangeKey")})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,8 +16,8 @@ public class ExchangeEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    private String exchangeKey;
+    private String persistentKey;
+    private Integer exchangeKey;
 
     @ManyToOne(targetEntity = CharacterEntity.class)
     @JoinColumn(name="character_id1")
@@ -37,12 +39,20 @@ public class ExchangeEntity extends BaseEntity {
         return id;
     }
 
-    public String getExchangeKey() {
+    public Integer getExchangeKey() {
         return exchangeKey;
     }
 
-    public void setExchangeKey(String exchangeKey) {
+    public void setExchangeKey(Integer exchangeKey) {
         this.exchangeKey = exchangeKey;
+    }
+
+    public String getPersistentKey() {
+        return persistentKey;
+    }
+
+    public void setPersistentKey(String persistentKey) {
+        this.persistentKey = persistentKey;
     }
 
     public CharacterEntity getCharacter1() {

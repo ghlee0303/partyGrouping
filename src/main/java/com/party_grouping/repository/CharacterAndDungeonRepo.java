@@ -19,8 +19,8 @@ public class CharacterAndDungeonRepo {
     @PersistenceContext
     private EntityManager em;
     private final JPAQueryFactory queryFactory;
-    private CharacterRepo characterRepo;
-    private DungeonRepo dungeonRepo;
+    private final CharacterRepo characterRepo;
+    private final DungeonRepo dungeonRepo;
     private final QCharacterAndDungeonEntity qCharacterAndDungeonEntity;
     @Autowired
     private ModelMapper modelMapper;

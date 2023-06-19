@@ -3,7 +3,7 @@ package com.party_grouping.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "character_table")
+@Table(name = "character_table", indexes = {@Index(name = "character_index", columnList = "apiId, server")})
 public class CharacterEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,9 +20,14 @@ public class CharacterEntity extends BaseEntity {
     private String jobId;         // 직업군 id
     private String jobGrowId;     // 전직 id
     private int buffLevel;
+    private boolean buffMax;
     private String buffName;
     private String buffId;
     private boolean buffer;
+
+    @OneToOne(targetEntity = CharacterItemEntity.class, cascade = CascadeType.ALL)
+    @JoinColumn(name="item_id")
+    private CharacterItemEntity item;
 
     public CharacterEntity() {
     }
@@ -146,5 +151,21 @@ public class CharacterEntity extends BaseEntity {
 
     public void setBuffer(boolean buffer) {
         this.buffer = buffer;
+    }
+
+    public CharacterItemEntity getItem() {
+        return item;
+    }
+
+    public void setItem(CharacterItemEntity item) {
+        this.item = item;
+    }
+
+    public boolean isBuffMax() {
+        return buffMax;
+    }
+
+    public void setBuffMax(boolean buffMax) {
+        this.buffMax = buffMax;
     }
 }

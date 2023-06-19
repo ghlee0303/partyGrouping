@@ -5,17 +5,21 @@ import com.party_grouping.repository.CharacterAndDungeonRepo;
 import com.party_grouping.repository.CharacterRepo;
 import com.party_grouping.repository.DungeonRepo;
 import com.party_grouping.request.CADRequestDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Transactional
+@Service
 public class CharacterAndDungeonService {
     private final CharacterAndDungeonRepo characterAndDungeonRepo;
     private final CharacterRepo characterRepo;
     private final DungeonRepo dungeonRepo;
 
+    @Autowired
     public CharacterAndDungeonService(CharacterAndDungeonRepo characterAndDungeonRepo, CharacterRepo characterRepo, DungeonRepo dungeonRepo) {
         this.characterAndDungeonRepo = characterAndDungeonRepo;
         this.characterRepo = characterRepo;

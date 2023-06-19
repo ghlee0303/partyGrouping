@@ -8,34 +8,23 @@ public class CharacterItemEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @ManyToOne(targetEntity = CharacterEntity.class)
-    @JoinColumn(name="character_id")
-    private CharacterEntity character;
     private Integer weaponReinforce;            // 무기 강화
     private Integer weaponRefine;               // 무기 재련
     private String weaponAmp;                   // 무기 증폭 여부
-    private String title;                       // 칭호명
     private Integer amulet;                     // 목걸이 마부
     private Integer wrist;                      // 팔찌 마부
     private Integer ring;                       // 반지 마부
     private boolean siv;                        // 시브 보장 여부
+    private boolean creature;                   // 종결 크리쳐 여부
+    private boolean aurora;                     // 종결오라 여부
+    private boolean title;                      // 종결 칭호 여부
     private Integer enchantSkillBonus;          // 어깨/벨트 스공 합
-    private String creature;                    // 크리쳐명
 
     public CharacterItemEntity() {
     }
 
     public Integer getId() {
         return id;
-    }
-
-    public CharacterEntity getCharacter() {
-        return character;
-    }
-
-    public void setCharacter(CharacterEntity character) {
-        this.character = character;
     }
 
     public Integer getWeaponReinforce() {
@@ -62,11 +51,11 @@ public class CharacterItemEntity extends BaseEntity {
         this.weaponAmp = weaponAmp;
     }
 
-    public String getTitle() {
+    public boolean isTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(boolean title) {
         this.title = title;
     }
 
@@ -110,11 +99,19 @@ public class CharacterItemEntity extends BaseEntity {
         this.enchantSkillBonus = enchantSkillBonus;
     }
 
-    public String getCreature() {
+    public boolean isAurora() {
+        return aurora;
+    }
+
+    public void setAurora(boolean aurora) {
+        this.aurora = aurora;
+    }
+
+    public boolean isCreature() {
         return creature;
     }
 
-    public void setCreature(String creature) {
+    public void setCreature(boolean creature) {
         this.creature = creature;
     }
 }

@@ -32,8 +32,6 @@ public class mainController {
 
     @GetMapping("/")
     public String getMain() {
-        characterService.saveByApiDnf("cain", "무개무개");
-
         return "index";
     }
     @GetMapping("data_insert")
@@ -41,7 +39,6 @@ public class mainController {
         model.addAttribute("group_data_list", groupService.groupDtoList());
         model.addAttribute("dungeon_data_list", dungeonService.dungeonDtoList());
         model.addAttribute("party_data_list", partyService.partyDtoList());
-        model.addAttribute("character_data_list", characterService.characterDtoList());
 
         return "dataInsert";
     }

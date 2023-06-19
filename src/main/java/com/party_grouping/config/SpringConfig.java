@@ -1,10 +1,10 @@
 package com.party_grouping.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.party_grouping.api.ApiDnF;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.party_grouping.api.ApiRequest;
 import com.party_grouping.entity.*;
 import com.party_grouping.repository.*;
-import com.party_grouping.service.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -26,12 +26,7 @@ public class SpringConfig {
 
     @Bean
     public CharacterRepo characterRepo() {
-        return new CharacterRepo(jpaQueryFactory(), qCharacterEntity());
-    }
-
-    @Bean
-    public CharacterService characterService() {
-        return new CharacterService(characterRepo(), apiDnf());
+        return new CharacterRepo(jpaQueryFactory(), characterItemRepo());
     }
 
     @Bean
@@ -40,20 +35,9 @@ public class SpringConfig {
     }
 
     @Bean
-    public DungeonService dungeonService() {
-        return new DungeonService(dungeonRepo());
-    }
-
-    @Bean
     public ExchangeRepo exchangeRepo() {
-        return new ExchangeRepo(jpaQueryFactory(), qExchangeEntity(), characterRepo());
+        return new ExchangeRepo(jpaQueryFactory(), characterRepo());
     }
-
-    @Bean
-    public ExchangeService exchangeService() {
-        return new ExchangeService(exchangeRepo(), characterRepo(), apiDnf());
-    }
-
 
     @Bean
     public CharacterAndDungeonRepo characterAndDungeonRepo() {
@@ -61,18 +45,8 @@ public class SpringConfig {
     }
 
     @Bean
-    public CharacterAndDungeonService characterAndDungeonService() {
-        return new CharacterAndDungeonService(characterAndDungeonRepo(), characterRepo(), dungeonRepo());
-    }
-
-    @Bean
     public PartyRepo partyRepo() {
         return new PartyRepo(jpaQueryFactory(), dungeonRepo(), groupRepo());
-    }
-
-    @Bean
-    public PartyService partyService() {
-        return new PartyService(partyRepo());
     }
 
     @Bean
@@ -87,29 +61,19 @@ public class SpringConfig {
     }
 
     @Bean
-    public PartyAndCharacterService partyAndCharacterService() {
-        return new PartyAndCharacterService(partyAndCharacterRepo(), partyRepo(), characterRepo());
-    }
-
-    @Bean
     public GroupRepo groupRepo() {
         return new GroupRepo(jpaQueryFactory(), qGroupEntity());
-    }
-
-    @Bean
-    public GroupService groupService() {
-        return new GroupService(groupRepo());
     }
 
     @Bean
     public GroupAndCharacterRepo groupAndCharacterRepo() {
         return new GroupAndCharacterRepo(jpaQueryFactory(), groupRepo(), characterRepo(), qGroupAndCharacterEntity());
     }
-
     @Bean
-    public GroupAndCharacterService groupAndCharacterService() {
-        return new GroupAndCharacterService(groupAndCharacterRepo(), groupRepo(), characterRepo());
+    public CharacterItemRepo characterItemRepo() {
+        return new CharacterItemRepo(jpaQueryFactory(), qCharacterItemEntity());
     }
+
     @Bean
     public QCharacterEntity qCharacterEntity() {
         return new QCharacterEntity("characterEntity");
@@ -151,6 +115,11 @@ public class SpringConfig {
     }
 
     @Bean
+    public QCharacterItemEntity qCharacterItemEntity() {
+        return new QCharacterItemEntity("characterItemEntity");
+    }
+
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
@@ -162,12 +131,14 @@ public class SpringConfig {
 
     @Bean
     public ObjectMapper objectMapper() {
-        return new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper;
     }
 
     @Bean
-    public ApiDnF apiDnf() {
-        return new ApiDnF();
+    public ApiRequest apiRequest() {
+        return new ApiRequest();
     }
 
 }

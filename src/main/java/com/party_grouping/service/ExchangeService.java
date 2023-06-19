@@ -1,37 +1,80 @@
 package com.party_grouping.service;
 
-import com.party_grouping.api.ApiDnF;
-import com.party_grouping.entity.CharacterEntity;
+import com.party_grouping.dto.ExchangeDto;
 import com.party_grouping.exception.ApiException;
-import com.party_grouping.repository.CharacterRepo;
+import com.party_grouping.exception.ErrorCode;
 import com.party_grouping.repository.ExchangeRepo;
 import com.party_grouping.request.ExchangeRequestDto;
+import com.party_grouping.util.ApiUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.security.SecureRandom;
+import java.util.*;
 
 @Transactional
+@Service
 public class ExchangeService {
     private final ExchangeRepo exchangeRepo;
-    private final CharacterRepo characterRepo;
-    private final ApiDnF apiDnF;
 
-    public ExchangeService(ExchangeRepo exchangeRepo, CharacterRepo characterRepo, ApiDnF apiDnF) {
+    @Autowired
+    public ExchangeService(ExchangeRepo exchangeRepo) {
         this.exchangeRepo = exchangeRepo;
-        this.characterRepo = characterRepo;
-        this.apiDnF = apiDnF;
     }
 
+    @Transactional
     public String save(ExchangeRequestDto exchangeRequestDto) {
-        String server = exchangeRequestDto.getServer();
-        List<CharacterEntity> characterEntityList = new ArrayList<>();
-
-        for (String apiId: exchangeRequestDto.getApiIdList()) {
-            characterEntityList.add(characterRepo.findByApiIdOptEntity(server, apiId)
-                    .orElseThrow(() -> { throw new ApiException("해당 캐릭터를 찾을 수 없습니다.", 400); }));
+        if (ApiUtils.isDuplicate(exchangeRequestDto.getApiIdList())) {
+            throw new ApiException(ErrorCode.PARTY_MEMBERS_DUPLICATE);
         }
 
-        return exchangeRepo.save(characterEntityList);
+        return exchangeRepo.save(exchangeRequestDto, generatePersistentKey());
+    }
+
+    @Transactional
+    public void deleteExchange(String persistentKey) {
+        exchangeRepo.deleteExchange(persistentKey);
+    }
+
+    public List<ExchangeDto> findByPersistentKeyList(List<String> persistentKeyList) {
+        return exchangeRepo.findByPersistentKeyList(persistentKeyList);
+    }
+
+    @Transactional
+    public int createExchangeKey(String persistentKey) {
+        int exchangeKey = generateExchangeKey();
+        exchangeRepo.updateExchangeKey(persistentKey, exchangeKey);
+        return exchangeKey;
+    }
+
+
+    private String generatePersistentKey() {
+        String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        int LENGTH = 9;
+        String persistentKey = null;
+
+        while (exchangeRepo.isKeyUnique(persistentKey)) {
+            StringBuilder builder = new StringBuilder();
+            SecureRandom random = new SecureRandom();
+            while (builder.length() < LENGTH) {
+                int index = random.nextInt(ALPHA_NUMERIC_STRING.length());
+                builder.append(ALPHA_NUMERIC_STRING.charAt(index));
+            }
+            persistentKey = builder.toString();
+        }
+
+        return persistentKey;
+    }
+
+    private int generateExchangeKey() {
+        Random random = new Random();
+        int exchangeKey = 0;
+
+        while (exchangeRepo.isKeyUnique(exchangeKey)) {
+            exchangeKey = random.nextInt(9000) + 1000;
+        }
+
+        return exchangeKey;
     }
 }

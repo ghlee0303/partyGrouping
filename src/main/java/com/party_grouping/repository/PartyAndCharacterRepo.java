@@ -1,13 +1,12 @@
 package com.party_grouping.repository;
 
 import com.party_grouping.dto.CharacterDto;
-import com.party_grouping.dto.GroupDto;
 import com.party_grouping.dto.PartyAndCharacterDto;
 import com.party_grouping.dto.PartyDto;
 import com.party_grouping.entity.*;
 import com.party_grouping.request.PACRequestDto;
 import com.party_grouping.response.dto.PACResponseDto;
-import com.party_grouping.util.DateUtils;
+import com.party_grouping.util.ApiUtils;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -128,7 +127,7 @@ public class PartyAndCharacterRepo {
                 .fetch();
 
         List<PACResponseDto> returnList = new ArrayList<>();
-        LocalDateTime thursday = DateUtils.getLastThursdayOfWeek();
+        LocalDateTime thursday = ApiUtils.getLastThursdayOfWeek();
         result.forEach(tuple -> {
             returnList.add(new PACResponseDto(
                     tuple.get(qPartyAndCharacterEntity.id),

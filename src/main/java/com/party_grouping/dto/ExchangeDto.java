@@ -1,7 +1,7 @@
 package com.party_grouping.dto;
 
-import com.party_grouping.entity.CharacterEntity;
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
 
 @Data
@@ -10,9 +10,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExchangeDto extends BaseDto {
+    @JsonIgnore
     protected Integer id;
 
-    protected String exchangeKey;
+    protected String persistentKey;
+    protected Integer exchangeKey;
 
     protected CharacterDto character1;
     protected CharacterDto character2;

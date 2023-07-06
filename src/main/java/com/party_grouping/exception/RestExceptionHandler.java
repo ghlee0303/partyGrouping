@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 
+import java.util.HashMap;
+
 @RestControllerAdvice
 public class RestExceptionHandler {
     @ExceptionHandler(ApiException.class)
@@ -22,5 +24,13 @@ public class RestExceptionHandler {
         ex.printStackTrace();
 
         return new ResponseEntity<>(message, HttpStatusCode.valueOf(status));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> defaultExceptionHandler(Exception ex) {
+        System.out.println("범용에러");
+        ex.printStackTrace();
+
+        return ResponseEntity.internalServerError().build();
     }
 }

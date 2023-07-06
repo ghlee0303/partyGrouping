@@ -1,6 +1,7 @@
 package com.party_grouping.service;
 
 import com.party_grouping.api.CharacterYaml;
+import com.party_grouping.data.CharacterNode;
 import com.party_grouping.dto.CharacterDto;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -10,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 @SpringBootTest
@@ -21,12 +23,8 @@ public class CharacterServiceTest {
 
     @Test
     void Test1() {
-        System.out.println(characterYaml.getBuff());
-        System.out.println(characterYaml.getBuffer());
-        System.out.println(characterYaml.getElemental());
-        System.out.println(characterYaml.getTitle());
-        System.out.println(characterYaml.getCreature());
-        System.out.println(characterYaml.getAurora());
+        LinkedList<CharacterNode> linkedList = new LinkedList<>();
+
     }
     @Test
     void test() {

@@ -1,44 +1,34 @@
 let characterObject = {};
-let characterCookie = [];       // json List
-const COOKIE_KEY = "character";
 
-window.onload = function () {
-    characterCookie = getJsonCookie(COOKIE_KEY);
+window.onload = async function () {
+    const page = 0;
     eventBinding();
 
-    characterStatusList(0)
-        .catch((err) => {
-            console.log(err);
-        });
-}
-
-// apiUse = 던파 api를 사용할 것인지 아닌지 0, 1
-async function characterStatusList(apiUse) {
-    requestCharacterStatusList(characterCookie, apiUse)
+    await requestCharacterSessionPage(page)
         .then(async dataList => {
             for (const data of dataList) {
                 await createCharacterStatus(data);  // 순서가 보장되어야 함으로 await 사용
             }
         })
-        .catch(err => {
-            return err;
-        });
-}
-
-function eventBinding() {
-    document.querySelector("#container-search .button").addEventListener("click", characterSearch);
-    document.getElementById("testBtn").addEventListener("click", test11);
-}
-
-function characterSearch() {
-    const name = document.getElementById("search-input").value;
-    const type = document.getElementById("search-select").value;
-
-    requestCharacterSearch(name, type)
-        .then((data) => createSearchCharacterList(data))
         .catch((err) => {
             console.log(err);
         });
+}
+
+
+function eventBinding() {
+    document.querySelector("#container-character-search .button").addEventListener("click", characterSearch);
+
+}
+
+function characterSearch() {
+    const parentElement = document.getElementById("container-character-search");
+    const name = parentElement.querySelector(".input").value;
+    const type = parentElement.querySelector(".search-select").value;
+
+    requestCharacterSearch(name, type)
+        .then((data) => createSearchCharacterList(data))
+        .catch((err) => catchHandler(err));
 }
 
 // 캐릭터 목록 생성
@@ -61,14 +51,9 @@ function characterStatus(event) {
     const apiId = parent.getAttribute('apiId');
     const server = parent.getAttribute('server');
 
-    requestCharacterStatus(apiId, server)
+    requestCharacterStatus(apiId, server, true)
         .then((data) => createCharacterStatus(data))
-        .then((data) => {
-            pushCookie(characterCookieGenerate(apiId, server));
-        })
-        .catch((err) => {
-            console.log(err);
-        })
+        .catch((err) => catchHandler(err));
 }
 
 // 캐릭터 상세정보 요소 생성
@@ -82,13 +67,13 @@ async function createCharacterStatus(character) {
     const charactersDiv = createCharactersDiv(character);
 
     const trashIcon = createTrashIcon();
-    const resetIcon = createRefreshIcon();
-    resetIcon.classList.add("character-reset");
+    const refreshIcon = createRefreshIcon();
+    refreshIcon.classList.add("character-refresh");
     trashIcon.addEventListener('click', trashIconClickEvent);
-    resetIcon.addEventListener('click', refreshIconClickEvent);
+    refreshIcon.addEventListener('click', refreshIconClickEvent);
 
     charactersDiv.appendChild(trashIcon);
-    charactersDiv.appendChild(resetIcon);
+    charactersDiv.appendChild(refreshIcon);
 
     charactersDiv.appendChild(createItemDiv(character));
 
@@ -107,7 +92,6 @@ function trashIconClickEvent() {
     const server = characterDiv.getAttribute("server");
 
     delete characterObject[name];
-    popCookie(characterCookieGenerate(apiId, server));
 
     characterDiv.remove();
 }
@@ -130,31 +114,4 @@ function characterRefresh(data, div) {
     div.querySelector(".character-fame").innerText = data.fame;
     div.removeChild(div.querySelector(".item"));
     div.appendChild(createItemDiv(data));
-}
-
-function characterCookieGenerate(apiId, server) {
-    return {
-        "apiId": apiId,
-        "server": server
-    };
-}
-
-function pushCookie(push) {
-    characterCookie.push(push);
-    createCookie(COOKIE_KEY, JSON.stringify(characterCookie), 30);
-}
-
-function popCookie(pop) {
-    for (let i=0; i<characterCookie.length; i++) {
-        if (characterCookie[i].server === pop.server && characterCookie[i].apiId === pop.apiId) {
-            characterCookie.splice(i, 1);
-            break;
-        }
-    }
-    createCookie(COOKIE_KEY, JSON.stringify(characterCookie), 30);
-}
-
-function test11() {
-    console.log(characterObject);
-    console.log(characterCookie);
 }

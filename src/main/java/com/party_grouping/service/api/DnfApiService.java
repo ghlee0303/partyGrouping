@@ -35,7 +35,6 @@ public class DnfApiService implements ApiService {
         this.characterYaml = characterYaml;
     }
 
-
     // 캐릭터 검색
     @Override
     public List<CharacterDto> callSearch(String name, String type) {
@@ -82,8 +81,7 @@ public class DnfApiService implements ApiService {
             throw new ApiException(ErrorCode.CHARACTER_NONE_BUFF);
         }
 
-        JSONObject skillInfo = buff
-                .getJSONObject("skillInfo");
+        JSONObject skillInfo = buff.getJSONObject("skillInfo");
 
         String buffName = skillInfo.getString("name");
         String buffId = skillInfo.getString("skillId");
@@ -104,7 +102,7 @@ public class DnfApiService implements ApiService {
 
         // 착용중인 장비가 13개가 되어야함
         if (itemJsonArray.length() != 13) {
-            throw new ApiException(ErrorCode.CHARACTER_ITEM_COUNT);
+            throw new ApiException(ErrorCode.ITEM_NOT_ENOUGH);
         }
 
         JSONObject weapon = itemJsonArray.getJSONObject(0);     // 무기
@@ -126,7 +124,7 @@ public class DnfApiService implements ApiService {
         return CharacterItemDto.builder()
                 .weaponReinforce(weapon.optInt("reinforce"))                // 무기 강화
                 .weaponRefine(weapon.optInt("refine"))                      // 무기 재련
-                .weaponAmp(weapon.optString("amplificationName"))           // 무기 증폭 여부
+                .weaponAmp(findJsonString(weapon, "amplificationName"))           // 무기 증폭 여부
                 .amulet(accessoryEnchantList.get(0))                            // 목걸이 마부
                 .wrist(accessoryEnchantList.get(1))                             // 팔찌 마부
                 .ring(accessoryEnchantList.get(2))                              // 반지 마부
@@ -240,7 +238,6 @@ public class DnfApiService implements ApiService {
 
         return siv.equals("피해 증가");
     }
-
 
     // 종결 칭호 여부
     private boolean isEndTitle(String title) {

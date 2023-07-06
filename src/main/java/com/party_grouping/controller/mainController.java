@@ -34,6 +34,7 @@ public class mainController {
     public String getMain() {
         return "index";
     }
+
     @GetMapping("data_insert")
     public String getData_Insert(Model model) {
         model.addAttribute("group_data_list", groupService.groupDtoList());

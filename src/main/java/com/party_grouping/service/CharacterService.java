@@ -1,10 +1,12 @@
 package com.party_grouping.service;
 
+import com.party_grouping.data.CharacterNode;
 import com.party_grouping.dto.CharacterDto;
+import com.party_grouping.dto.CharacterItemDto;
 import com.party_grouping.exception.ApiException;
 import com.party_grouping.exception.ErrorCode;
 import com.party_grouping.repository.CharacterRepo;
-import com.party_grouping.request.CharacterRequestDto;
+import com.party_grouping.request.CharacterRequest;
 import com.party_grouping.service.inter.ApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,26 +52,24 @@ public class CharacterService {
         return dnfApiService.callSearch(name, type);
     }
 
-    public List<CharacterDto> characterStatusList(boolean apiUse, LinkedHashMap<String, String> characterMap) {
+    public List<CharacterDto> characterStatusList(boolean apiUse, List<CharacterRequest> characterRequestList) {
         List<CharacterDto> characterDtoList;
 
         if (apiUse) {
-            characterDtoList = characterStatusFromAPI(characterMap);
+            characterDtoList = characterStatusFromAPI(characterRequestList);
         } else {
-            characterDtoList = sortListByMap(characterRepo.findStatusList(characterMap), characterMap);
+            characterDtoList = sortList(characterRepo.findStatusList(characterRequestList), characterRequestList);
         }
-
-        System.out.println(characterDtoList);
 
         return characterDtoList;
     }
 
-    private List<CharacterDto> characterStatusFromAPI(LinkedHashMap<String, String> characterMap) {
+    private List<CharacterDto> characterStatusFromAPI(List<CharacterRequest> characterRequestList) {
         List<CharacterDto> characterDtoList = new ArrayList<>();
 
-        for (Map.Entry<String, String> entry : characterMap.entrySet()) {
-            String apiId = entry.getKey();
-            String server = entry.getValue();
+        for (CharacterRequest req : characterRequestList) {
+            String apiId = req.getApiId();
+            String server = req.getServer();
             CharacterDto characterDto = characterStatus(server, apiId);
             characterDtoList.add(characterDto);
         }
@@ -77,13 +77,12 @@ public class CharacterService {
         return characterDtoList;
     }
 
-    private List<CharacterDto> sortListByMap(List<CharacterDto> characterDtoList, LinkedHashMap<String, String> characterMap) {
+    private List<CharacterDto> sortList(List<CharacterDto> characterDtoList, List<CharacterRequest> characterRequestList) {
         List<CharacterDto> result = new ArrayList<>();
 
-        for (Map.Entry<String, String> entry : characterMap.entrySet()) {
-            String apiId = entry.getKey();
-            String server = entry.getValue();
-
+        for (CharacterRequest req : characterRequestList) {
+            String apiId = req.getApiId();
+            String server = req.getServer();
             characterDtoList.stream()
                     .filter(dto -> dto.getApiId().equals(apiId) && dto.getServer().equals(server))
                     .findFirst()

@@ -25,7 +25,11 @@ function createItemDiv(character) {
     itemDiv.appendChild(accessorySpan);
 
     const endItemSpan = document.createElement("span");    // endItemSpan 생성
-    endItemSpan.innerText = endItemText(item);
+    const endIT = endItemText(item);
+    endItemSpan.innerText = endIT;
+    if (!endIT) {
+        endItemSpan.appendChild(document.createElement("br"));
+    }
     endItemSpan.classList.add("endItem");
     itemDiv.appendChild(endItemSpan);
 

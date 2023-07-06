@@ -1,29 +1,34 @@
-
-function characterOK() {
-    console.log("캐릭터 ok");
-}
-
 // 검색 요청
+// 이름, 서버or모험단, 세션여부
 function requestCharacterSearch(name, type) {
     const serverUri = `/character_search?name=${name}&type=${type}`;
+    console.log(serverUri);
 
     return fetchData(serverUri, null)
         .then(data => { return data; })
         .catch(error => {
-            // 에러 처리 코드 작성
-            console.error(error);
+            throw error;
         });
 }
 
 // 상세정보 요청
-function requestCharacterStatus(apiId, server) {
-    const serverUri = `/character_status?apiId=${apiId}&server=${server}`;
+function requestCharacterStatus(apiId, server, session=false) {
+    const serverUri = `/character_status?apiId=${apiId}&server=${server}&session=${session}`;
 
     return fetchData(serverUri, null)
         .then(data => { return data; })
         .catch(error => {
-            // 에러 처리 코드 작성
-            console.error(error);
+            throw error;
+        });
+}
+
+function requestCharacterSessionPage(page) {
+    const serverUri = "/character_session?page="+page;
+
+    return fetchData(serverUri, null)
+        .then(data => { return data; })
+        .catch(error => {
+            throw error;
         });
 }
 
@@ -47,8 +52,7 @@ function requestCharacterStatusList(list, apiUse) {
     return fetchData(serverUri, option)
         .then(data => { return data; })
         .catch(error => {
-            // 에러 처리 코드 작성
-            console.error(error);
+            throw error;
         });
 }
 
@@ -102,9 +106,9 @@ function createTrashIcon() {
 
 // 리셋 아이콘
 function createRefreshIcon() {
-    const resetIcon = document.createElement("i");   // 휴지통 생성
-    resetIcon.classList.add("bl");
-    resetIcon.classList.add("bi-arrow-clockwise");
+    const refreshIcon = document.createElement("i");   // 휴지통 생성
+    refreshIcon.classList.add("bl");
+    refreshIcon.classList.add("bi-arrow-clockwise");
 
-    return resetIcon;
+    return refreshIcon;
 }

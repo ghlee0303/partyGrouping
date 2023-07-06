@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="headFragment">
     <head>
         <title>test project</title>
@@ -23,15 +22,6 @@
                 color: var(--dl-color-gray-black);
                 background-color: var(--dl-color-gray-white);
             }
-
-            .border-bl {
-                border: 1px solid black;
-            }
-
-            .line-mid {
-                border: 1px solid grey;
-                width: 80%;
-            }
         </style>
         <link
                 rel="stylesheet"
@@ -48,17 +38,16 @@
 </th:block>
 <body>
 <div>
-    <button id="testBtn"> test </button>
     <div id="container">
         <div id="features">
-            <th:block th:replace="fragments/header :: headerFragment"></th:block>
-            <button class="btn btn-primary btn-character-search" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSearch" aria-expanded="false" aria-controls="collapseSearch">
+            <th:block th:replace="~{fragments/header :: headerFragment}"></th:block>
+            <button class="btn btn-primary character-search" type="button" data-bs-toggle="collapse" data-bs-target="#characterSearch" aria-expanded="false" aria-controls="characterSearch">
                 캐릭터 검색
             </button>
-            <div class="collapse" id="collapseSearch">
+            <div class="collapse" id="characterSearch">
                 <div class="card card-body">
-                    <div id="container-search">
-                        <select id="search-select">
+                    <div id="container-character-search">
+                        <select class="search-select">
                             <option value="all">전체</option>
                             <option value="adventure">모험단</option>
                             <option value="cain">카인</option>
@@ -72,8 +61,7 @@
                         </select>
                         <input
                                 type="text"
-                                placeholder="placeholder"
-                                id="search-input"
+                                placeholder="캐릭터명"
                                 class="input"
                         />
                         <button class="button">검색</button>
@@ -83,7 +71,9 @@
                 </div>
             </div>
 
-            <div class="container-character main-list"> </div>
+            <div class="container-character main-list">
+
+            </div>
 
         </div>
     </div>

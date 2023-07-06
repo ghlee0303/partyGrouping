@@ -1,70 +1,80 @@
 package com.party_grouping.service;
 
+import com.party_grouping.dto.CharacterDto;
 import com.party_grouping.dto.ExchangeDto;
 import com.party_grouping.exception.ApiException;
 import com.party_grouping.exception.ErrorCode;
 import com.party_grouping.repository.ExchangeRepo;
+import com.party_grouping.request.CharacterRequest;
 import com.party_grouping.request.ExchangeRequestDto;
 import com.party_grouping.util.ApiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.SecureRandom;
 import java.util.*;
 
 @Transactional
 @Service
 public class ExchangeService {
     private final ExchangeRepo exchangeRepo;
+    private final CharacterService characterService;
 
     @Autowired
-    public ExchangeService(ExchangeRepo exchangeRepo) {
+    public ExchangeService(ExchangeRepo exchangeRepo, CharacterService characterService) {
         this.exchangeRepo = exchangeRepo;
+        this.characterService = characterService;
     }
 
     @Transactional
-    public String save(ExchangeRequestDto exchangeRequestDto) {
+    public ExchangeDto save(ExchangeRequestDto exchangeRequestDto) {
         if (ApiUtils.isDuplicate(exchangeRequestDto.getApiIdList())) {
             throw new ApiException(ErrorCode.PARTY_MEMBERS_DUPLICATE);
         }
 
-        return exchangeRepo.save(exchangeRequestDto, generatePersistentKey());
+        ExchangeDto exchangeDto = exchangeRepo.save(exchangeRequestDto);
+        System.out.println(exchangeDto);
+
+        return exchangeDto;
+    }
+
+    public ExchangeDto findExchange(Integer exchangeKey) {
+        System.out.println("exc");
+        return exchangeRepo.findExchangeByKey(exchangeKey).orElse(null);
+    }
+
+    public List<ExchangeDto> findExchangeList(List<Integer> id) {
+        return exchangeRepo.findExchangeListId(id);
     }
 
     @Transactional
-    public void deleteExchange(String persistentKey) {
-        exchangeRepo.deleteExchange(persistentKey);
-    }
-
-    public List<ExchangeDto> findByPersistentKeyList(List<String> persistentKeyList) {
-        return exchangeRepo.findByPersistentKeyList(persistentKeyList);
+    public boolean deleteExchange(Integer id) {
+        return exchangeRepo.deleteExchange(id);
     }
 
     @Transactional
-    public int createExchangeKey(String persistentKey) {
-        int exchangeKey = generateExchangeKey();
-        exchangeRepo.updateExchangeKey(persistentKey, exchangeKey);
-        return exchangeKey;
+    public Integer createExchangeKey(Integer id) {
+        return exchangeRepo.setExchangeKey(id, generateExchangeKey());
     }
 
+    public List<CharacterDto> exchangeReset(Integer id) {
+        List<CharacterRequest> characterRequestList = new ArrayList<>();
+        ExchangeDto exchangeDto = exchangeRepo.findExchange(id).orElse(null);
 
-    private String generatePersistentKey() {
-        String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        int LENGTH = 9;
-        String persistentKey = null;
-
-        while (exchangeRepo.isKeyUnique(persistentKey)) {
-            StringBuilder builder = new StringBuilder();
-            SecureRandom random = new SecureRandom();
-            while (builder.length() < LENGTH) {
-                int index = random.nextInt(ALPHA_NUMERIC_STRING.length());
-                builder.append(ALPHA_NUMERIC_STRING.charAt(index));
-            }
-            persistentKey = builder.toString();
+        if (exchangeDto == null) {
+            return null;
         }
 
-        return persistentKey;
+        addCharacterReqList(characterRequestList, exchangeDto.getCharacter1());
+        addCharacterReqList(characterRequestList, exchangeDto.getCharacter2());
+        addCharacterReqList(characterRequestList, exchangeDto.getCharacter3());
+        addCharacterReqList(characterRequestList, exchangeDto.getCharacter4());
+
+        return characterService.characterStatusList(true, characterRequestList);
+    }
+
+    private void addCharacterReqList(List<CharacterRequest> characterRequestList, CharacterDto characterDto) {
+        characterRequestList.add(new CharacterRequest(characterDto.getApiId(), characterDto.getServer()));
     }
 
     private int generateExchangeKey() {

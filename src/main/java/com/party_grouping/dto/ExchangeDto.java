@@ -10,10 +10,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExchangeDto extends BaseDto {
-    @JsonIgnore
     protected Integer id;
 
-    protected String persistentKey;
     protected Integer exchangeKey;
 
     protected CharacterDto character1;

@@ -25,12 +25,7 @@
       }
 
       .border-bl {
-        border: 1px solid black;
-      }
-
-      .line-mid {
-        border: 1px solid grey;
-        width: 80%;
+        border: 1px black solid;
       }
     </style>
     <link
@@ -48,77 +43,27 @@
 </th:block>
 <body>
 <div>
-  <button id="testBtn"> test </button>
-  <!-- Modal -->
-  <div class="modal fade" id="exchangeModal" tabindex="-1" aria-labelledby="exchangeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-scrollable">
-      <div class="modal-content">
-
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exchangeModalLabel">Modal title</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-
-        <div class="modal-body">
-          <div id="container-modal">
-            <div id="container-search">
-              <select id="search-select">
-                <option value="all">전체</option>
-                <option value="adventure">모험단</option>
-                <option value="cain">카인</option>
-                <option value="diregie">디레지에</option>
-                <option value="siroco">시로코</option>
-                <option value="prey">프레이</option>
-                <option value="casillas">카시야스</option>
-                <option value="hilder">힐더</option>
-                <option value="anton">안톤</option>
-                <option value="bakal">바칼</option>
-              </select>
-              <input
-                      type="text"
-                      placeholder="placeholder"
-                      id="search-input"
-                      class="input"
-              />
-              <button class="button">검색</button>
-            </div>
-
-            <div id="searched" class="container-character"> </div>
-
-            <div class="container-exchange">
-              <span class="exchange-adventure"></span>
-              <div class="exchange-characters"> </div>
-            </div>
-
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary modal-btn" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary modal-btn">Save changes</button>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
   <div id="container">
     <div id="features">
-      <th:block th:replace="fragments/header :: headerFragment"></th:block>
+      <th:block th:replace="~{fragments/header :: headerFragment}"></th:block>
 
-      <!-- Button trigger modal -->
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exchangeModal">
-        새 교환파티 생성
-      </button>
-
-      <div class="container-party">
-
+      <div id="container-exchange-search" style="margin: 0 auto;">
+        <input
+                type="text"
+                placeholder="파티 번호"
+                class="input"
+                style="width: 500px;"
+        />
+        <button class="button">검색</button>
       </div>
 
+      <div class="container-party"> </div>
     </div>
   </div>
 </div>
+
 </body>
+<script src="/script/module/exchange.js"></script>
 <script src="/script/module/characters.js"></script>
 <script src="/script/module/cookie.js"></script>
 <script src="/script/module/fetch.js"></script>

@@ -32,35 +32,48 @@ public class ExchangeRepo {
     }
 
     @Transactional
-    public String save(ExchangeRequestDto exchangeRequestDto, String persistentKey) {
+    public ExchangeDto save(ExchangeRequestDto exchangeRequestDto) {
         String server = exchangeRequestDto.getServer();
         List<CharacterEntity> characterEntityList = exchangeRequestDto.getApiIdList().stream().map(apiId ->
                         characterRepo.findCharacterEntity(server, apiId)
                     .orElseThrow(() -> { throw new ApiException(ErrorCode.CHARACTER_NOT_FOUND); })
         ).collect(Collectors.toList());
-        
-        ExchangeEntity exchange = createEntity(characterEntityList, persistentKey);
 
-        em.persist(exchange);
+        ExchangeEntity entity = createEntity(characterEntityList);
+
+        em.persist(entity);
         em.flush();
 
-        return exchange.getPersistentKey();
+        System.out.println(entity.getId());
+
+        return modelMapper.map(entity, ExchangeDto.class);
     }
 
-    private ExchangeEntity createEntity(List<CharacterEntity> characterEntityList, String persistentKey) {
+    private ExchangeEntity createEntity(List<CharacterEntity> characterEntityList) {
         return ExchangeEntity.builder()
                 .character1(characterEntityList.get(0))
                 .character2(characterEntityList.get(1))
                 .character3(characterEntityList.get(2))
                 .character4(characterEntityList.get(3))
-                .persistentKey(persistentKey)
                 .build();
     }
 
-    public List<ExchangeDto> findByPersistentKeyList(List<String> persistentKey) {
+    // 메소드명에 Exchange가 붙어 있을 경우 public, Dto 리턴
+    // 없으면 private, entity 리턴
+    public Optional<ExchangeDto> findExchange(Integer id) {
+        return Optional.ofNullable(findById(id))
+                .map(entity -> modelMapper.map(entity, ExchangeDto.class));
+    }
+
+    public Optional<ExchangeDto> findExchangeByKey(Integer exchangeKey) {
+        return Optional.ofNullable(findByExchangeKey(exchangeKey))
+                .map(entity -> modelMapper.map(entity, ExchangeDto.class));
+    }
+
+    public List<ExchangeDto> findExchangeListId(List<Integer> id) {
         List<ExchangeEntity> exchangeList = queryFactory
                 .selectFrom(exchangeEntity)
-                .where(exchangeEntity.persistentKey.in(persistentKey)
+                .where(exchangeEntity.id.in(id)
                         .and(exchangeEntity.del_date.isNull()))
                 .fetch();
 
@@ -68,49 +81,43 @@ public class ExchangeRepo {
                 .stream().map(exchange -> modelMapper.map(exchange, ExchangeDto.class)).toList();
     }
 
-    public List<ExchangeDto> findByExchangeKeyList(List<Integer> exchangeKey) {
-        List<ExchangeEntity> exchangeList = queryFactory
-                .selectFrom(exchangeEntity)
-                .where(exchangeEntity.exchangeKey.in(exchangeKey)
-                        .and(exchangeEntity.del_date.isNull()))
-                .fetch();
-
-        return exchangeList
-                .stream().map(exchange -> modelMapper.map(exchange, ExchangeDto.class)).toList();
-    }
-
-    private ExchangeEntity findPersistentKey(String persistentKey) {
+    private ExchangeEntity findByExchangeKey(Integer exchangeKey) {
         return queryFactory
                 .selectFrom(exchangeEntity)
-                .where(exchangeEntity.persistentKey.eq(persistentKey)
+                .where(exchangeEntity.exchangeKey.eq(exchangeKey)
+                        .and(exchangeEntity.del_date.isNull()))
+                .fetchOne();
+    }
+
+    private ExchangeEntity findById(Integer id) {
+        return queryFactory
+                .selectFrom(exchangeEntity)
+                .where(exchangeEntity.id.eq(id)
                         .and(exchangeEntity.del_date.isNull()))
                 .fetchOne();
     }
 
     @Transactional
-    public void updateExchangeKey(String persistentKey, int exchangeKey) {
-        ExchangeEntity exchange = findPersistentKey(persistentKey);
+    public Integer setExchangeKey(Integer id, Integer exchangeKey) {
+        ExchangeEntity exchange = findById(id);
 
-        if (exchange == null){
-            throw new ApiException(ErrorCode.PARTY_NOT_FOUND);
-        }
+        if (exchange == null)
+            return null;
 
         exchange.setExchangeKey(exchangeKey);
+        return exchangeKey;
     }
 
     @Transactional
-    public void deleteExchange(String persistentKey) {
-        ExchangeEntity exchange = findPersistentKey(persistentKey);
+    public boolean deleteExchange(Integer id) {
+        ExchangeEntity exchange = findById(id);
+        if (exchange == null)
+            return false;
+
         exchange.setDel_date(LocalDateTime.now());
         em.flush();
-    }
 
-    public boolean isKeyUnique(String key) {
-        return key == null || queryFactory
-                .selectFrom(exchangeEntity)
-                .where(exchangeEntity.persistentKey.eq(key)
-                        .and(exchangeEntity.del_date.isNull()))
-                .fetch() == null;
+        return true;
     }
 
     public boolean isKeyUnique(int key) {

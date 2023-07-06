@@ -1,5 +1,6 @@
 package com.party_grouping.service;
 
+import com.party_grouping.dto.CharacterDto;
 import com.party_grouping.dto.ExchangeDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +16,6 @@ public class ExchangeServiceTest {
 
     @Test
     void test() {
-        List<String> list = new ArrayList<>();
-        list.add("5EB32FMHB");
-        List<ExchangeDto> dtoList = exchangeService.findByPersistentKeyList(list);
-
-        System.out.println(dtoList);
 
     }
 

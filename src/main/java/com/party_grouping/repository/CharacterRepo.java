@@ -4,6 +4,7 @@ import com.party_grouping.dto.CharacterDto;
 import com.party_grouping.dto.QCharacterDto;
 import com.party_grouping.dto.QCharacterItemDto;
 import com.party_grouping.entity.CharacterEntity;
+import com.party_grouping.request.CharacterRequest;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -77,8 +78,8 @@ public class CharacterRepo {
                 .fetch();
     }
 
-    public List<CharacterDto> findStatusList(LinkedHashMap<String, String> characterMap) {
-        BooleanExpression whereClause = buildFindStatusMultiQuery(characterMap);
+    public List<CharacterDto> findStatusList(List<CharacterRequest> characterRequestList) {
+        BooleanExpression whereClause = buildFindStatusMultiQuery(characterRequestList);
 
         List<CharacterDto> result = selectQuery()
                 .where(whereClause)
@@ -126,12 +127,12 @@ public class CharacterRepo {
                 .leftJoin(characterEntity.item, characterItemEntity);
     }
 
-    private BooleanExpression buildFindStatusMultiQuery(LinkedHashMap<String, String> characterMap) {
+    private BooleanExpression buildFindStatusMultiQuery(List<CharacterRequest> characterRequestList) {
         BooleanExpression whereClause = Expressions.FALSE;
 
-        for( Map.Entry<String, String> entry : characterMap.entrySet() ) {
-            String apiId = entry.getKey();
-            String server = entry.getValue();
+        for (CharacterRequest req : characterRequestList) {
+            String apiId = req.getApiId();
+            String server = req.getServer();
 
             BooleanExpression condition = characterEntity.apiId.eq(apiId)
                             .and(characterEntity.server.eq(server)

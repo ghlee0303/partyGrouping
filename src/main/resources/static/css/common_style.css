@@ -1,4 +1,4 @@
-#container-search {
+#container-character-search {
   min-width: 50vw;
   height: 34px;
   display: flex;
@@ -9,16 +9,15 @@
   margin-bottom: var(--dl-space-space-threeunits);
   justify-content: center;
 }
-#search-select {
-  width: 88px;
+.search-select {
   height: 100%;
   border-color: var(--dl-color-gray-black);
   border-style: solid;
   border-width: 1px;
   border-radius: var(--dl-radius-radius-radius4);
 }
-#search-input {
-  width: 552px;
+#container-character-search .input {
+  width: 452px;
   height: 100%;
 }
 .container-character {
@@ -59,7 +58,7 @@
   height: 20px;
   cursor: pointer;
 }
-.character-reset {
+.character-refresh {
   position: absolute;
   top: 0;
   left: 4px;
@@ -67,7 +66,7 @@
   height: 20px;
   cursor: pointer;
 }
-.exchange-reset {
+.exchange-refresh {
   position: absolute;
   top: 0;
   right: 24px;
@@ -128,11 +127,21 @@
   justify-content: flex-start;
   position: relative;
 }
-.btn-character-search {
+.character-search {
   width: 60%;
   margin-left: auto;
   margin-right: auto;
 }
 .main-list {
   margin-top: 80px;
+}
+.btn-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 auto; /* 가로 중앙 정렬을 위한 margin 속성 추가 */
+  width: 60%; /* 요구사항에 맞게 span-container의 너비 조정 */
+}
+.btn-container button {
+  flex: 1 0 25%;
+  box-sizing: border-box;
 }

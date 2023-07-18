@@ -3,6 +3,7 @@ package com.party_grouping.service.mock_test;
 import com.party_grouping.api.Api;
 import com.party_grouping.api.Buff;
 import com.party_grouping.api.CharacterYaml;
+import com.party_grouping.api.DungeonYaml;
 import com.party_grouping.dto.CharacterDto;
 import com.party_grouping.dto.CharacterItemDto;
 import com.party_grouping.service.api.DnfApiService;
@@ -20,7 +21,8 @@ import java.util.List;
 public class DnfApiServiceMockTest {
     private final Api api = new ApiRequestMock();
     private final CharacterYaml characterYaml = new CharacterYaml();
-    private final ApiService apiService = new DnfApiService(api, characterYaml);
+    private final DungeonYaml dungeonYaml = new DungeonYaml();
+    private final ApiService apiService = new DnfApiService(api, characterYaml, dungeonYaml);
 
     //given
     //when

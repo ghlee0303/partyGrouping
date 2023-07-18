@@ -16,6 +16,7 @@ public class ExchangeEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Integer exchangeKey;
+    private String adventureName;
 
     @ManyToOne(targetEntity = CharacterEntity.class)
     @JoinColumn(name="character_id1")
@@ -43,6 +44,14 @@ public class ExchangeEntity extends BaseEntity {
 
     public void setExchangeKey(Integer exchangeKey) {
         this.exchangeKey = exchangeKey;
+    }
+
+    public String getAdventureName() {
+        return adventureName;
+    }
+
+    public void setAdventureName(String adventureName) {
+        this.adventureName = adventureName;
     }
 
     public CharacterEntity getCharacter1() {
@@ -76,4 +85,5 @@ public class ExchangeEntity extends BaseEntity {
     public void setCharacter4(CharacterEntity character4) {
         this.character4 = character4;
     }
+
 }

@@ -127,7 +127,7 @@ public class PartyAndCharacterRepo {
                 .fetch();
 
         List<PACResponseDto> returnList = new ArrayList<>();
-        LocalDateTime thursday = ApiUtils.getLastThursdayOfWeek();
+        LocalDateTime thursday = ApiUtils.getNowDunDate();
         result.forEach(tuple -> {
             returnList.add(new PACResponseDto(
                     tuple.get(qPartyAndCharacterEntity.id),

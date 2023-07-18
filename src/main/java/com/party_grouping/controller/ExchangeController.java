@@ -5,11 +5,15 @@ import com.party_grouping.dto.CharacterDto;
 import com.party_grouping.dto.ExchangeDto;
 import com.party_grouping.exception.ApiException;
 import com.party_grouping.exception.ErrorCode;
-import com.party_grouping.request.ExchangeRequestDto;
+import com.party_grouping.request.ExchangeRequest;
+import com.party_grouping.response.CharacterResponse;
+import com.party_grouping.response.ExchangeResponse;
+import com.party_grouping.service.CharacterService;
 import com.party_grouping.service.ExchangeService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +22,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class ExchangeController {
     @Autowired
     private ExchangeService exchangeService;
+    @Autowired
+    private CharacterService characterService;
     @Autowired
     private ObjectMapper mapper;
 
@@ -44,7 +51,7 @@ public class ExchangeController {
     @ResponseBody
     public ResponseEntity<Integer> uploadExchange(HttpSession session, @RequestBody String json) {
         List<Integer> exchangeSession = getSessionExchange(session);
-        ExchangeDto exchangeDto = exchangeService.save(exchangeDtoParsing(json));
+        ExchangeDto exchangeDto = exchangeService.save(parsingExchangeRequest(json));
         exchangeSession.add(exchangeDto.getId());
         setSessionExchange(session, exchangeSession);
 
@@ -74,26 +81,36 @@ public class ExchangeController {
 
     @GetMapping("exchange_search")
     @ResponseBody
-    public ResponseEntity<ExchangeDto> searchExchange(@RequestParam(value = "exchangeKey", required = false) String StrExchangeKey) {
-        Integer exchangeKey = validateExchangeKey(StrExchangeKey);
-        if (exchangeKey == null)
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<List<ExchangeResponse>> searchExchange(@RequestParam(value = "search") String search,
+                                                            @RequestParam(value = "type") String type) {    // adventure = 모험단 검색,
+                                                                                                            // number = 파티번호 검색
+        List<ExchangeDto> exchangeDtoList;
 
-        ExchangeDto exchangeDto = exchangeService.findExchange(exchangeKey);                           // 교환 키로 검색 Integer
+        switch (type) {
+            case "adventure" -> exchangeDtoList = exchangeService.findExchangeByAdventure(search);
+            case "number" -> {
+                Integer exchangeKey = validateExchangeKey(search);
+                exchangeDtoList = Collections.singletonList(exchangeService.findExchange(exchangeKey));
+            }
+            default -> {
+                return ResponseEntity.notFound().build();
+            }
+        }
 
-        if (exchangeDto == null)
-            return ResponseEntity.notFound().build();
+        List<ExchangeResponse> responseList = exchangeDtoList.stream()
+                .map(exchangeService::createResponse).toList();
 
-        return ResponseEntity.ok(exchangeDto);
+        return ResponseEntity.ok(responseList);
     }
 
     @GetMapping("exchange_session")
     @ResponseBody
-    public ResponseEntity<List<ExchangeDto>> searchExchangeListBySession(HttpSession session,
+    public ResponseEntity<List<ExchangeResponse>> searchExchangeListBySession(HttpSession session,
                                                                          @RequestParam("page") Integer page) {
-        List<ExchangeDto> exchangeSession = exchangeService.findExchangeList(getSessionExchange(session));
+        List<ExchangeResponse> responseList = exchangeService.findExchangeList(getSessionExchange(session)).stream()
+                .map(exchangeService::createResponse).toList();
 
-        return ResponseEntity.ok(exchangeSession);
+        return ResponseEntity.ok(responseList);
     }
 
     @GetMapping("exchange_key")
@@ -110,37 +127,45 @@ public class ExchangeController {
         return exchangeService.exchangeReset(id);
     }
 
-    private ExchangeRequestDto exchangeDtoParsing(String json) {
+    @GetMapping("exchange_test")
+    @ResponseBody
+    public ResponseEntity<ExchangeResponse> getExchangeTest() {
+
+        return ResponseEntity.ok(null);
+    }
+
+    private ExchangeRequest parsingExchangeRequest(String json) {
         JSONObject jsonObject = new JSONObject(json);
-        if (jsonObject.optJSONArray("apiIdList").length() != 4) {
+        JSONArray apiIdListArray = jsonObject.optJSONArray("apiIdList");
+
+        if (apiIdListArray == null || apiIdListArray.length() != 4) {
             throw new ApiException(ErrorCode.PARTY_MEMBERS_NOT_ENOUGH);
         }
 
-        return new ExchangeRequestDto(jsonObject);
+        List<String> apiIdList = new ArrayList<>();
+
+        for (int i = 0; i < apiIdListArray.length(); i++) {
+            String apiId = apiIdListArray.getString(i);
+            apiIdList.add(apiId);
+        }
+
+        return ExchangeRequest.builder()
+                .server(jsonObject.getString("server"))
+                .adventureName(jsonObject.getString("adventureName"))
+                .apiIdList(apiIdList)
+                .build();
     }
 
     private Integer validateExchangeKey(String exchangeKey) {
-        Integer key = null;
-        try {
-            key = Integer.parseInt(exchangeKey);
-        } catch (NumberFormatException e) {
+        if (exchangeKey.isEmpty()) {
             return null;
         }
-
-        return key;
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<String> getSessionExchange2(HttpSession session) {
-        List<String> exchangeSession = (List<String>) session.getAttribute("exchange");
-        if (exchangeSession == null) {
-            exchangeSession = new ArrayList<>();
+        
+        try {
+            return Integer.parseInt(exchangeKey);
+        } catch (NumberFormatException e) {
+            return 0;
         }
-        return exchangeSession;
-    }
-
-    private void setSessionExchange2(HttpSession session, List<String> exchangeSession) {
-        session.setAttribute("exchange", exchangeSession);
     }
 
     @SuppressWarnings("unchecked")

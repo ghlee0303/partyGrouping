@@ -1,3 +1,10 @@
+class characterObject {
+    constructor(apiId, server) {
+        this.apiId = apiId;
+        this.server = server;
+    }
+}
+
 // 검색 요청
 // 이름, 서버or모험단, 세션여부
 function requestCharacterSearch(name, type) {
@@ -11,7 +18,6 @@ function requestCharacterSearch(name, type) {
         });
 }
 
-// 상세정보 요청
 function requestCharacterStatus(apiId, server, session=false) {
     const serverUri = `/character_status?apiId=${apiId}&server=${server}&session=${session}`;
 
@@ -22,34 +28,23 @@ function requestCharacterStatus(apiId, server, session=false) {
         });
 }
 
-function requestCharacterSessionPage(page) {
-    const serverUri = "/character_session?page="+page;
+function requestCharacterDelete(apiId, server) {
+    const serverUri = `/character?apiId=${apiId}&server=${server}`;
+    const option = {
+        method: 'DELETE'
+    };
 
-    return fetchData(serverUri, null)
+    return fetchData(serverUri, option)
         .then(data => { return data; })
         .catch(error => {
             throw error;
         });
 }
 
-// 상세정보 리스트 요청
-function requestCharacterStatusList(list, apiUse) {
-    const serverUri = `/character_status_list`;
-    const postBody = {
-        apiUse,
-        "characterRequestList": list
-    }
-    console.log(list);
+function requestCharacterSession(page) {
+    const serverUri = "/character_session?page="+page;
 
-    const option = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(postBody)
-    };
-
-    return fetchData(serverUri, option)
+    return fetchData(serverUri, null)
         .then(data => { return data; })
         .catch(error => {
             throw error;
@@ -111,4 +106,30 @@ function createRefreshIcon() {
     refreshIcon.classList.add("bi-arrow-clockwise");
 
     return refreshIcon;
+}
+
+function createDungeonIcon(dungeon) {
+    const dungeonIcon = document.createElement("div");
+    dungeonIcon.classList.add("dungeon-icon");
+
+    if (dungeon.ispins) {
+        const ispinsIcon = document.createElement("img");
+        ispinsIcon.setAttribute("src", "image/이스핀즈");
+        ispinsIcon.style.marginBottom = "2px";
+        dungeonIcon.appendChild(ispinsIcon);
+    }
+    if (dungeon.dimension) {
+        const dimenIcon = document.createElement("img");
+        dimenIcon.setAttribute("src", "image/차원회랑");
+        dimenIcon.style.marginBottom = "2px";
+        dungeonIcon.appendChild(dimenIcon);
+    }
+    if (dungeon.bakal) {
+        const bakalIcon = document.createElement("img");
+        bakalIcon.setAttribute("src", "image/기계혁명");
+        bakalIcon.style.marginBottom = "2px";
+        dungeonIcon.appendChild(bakalIcon);
+    }
+
+    return dungeonIcon;
 }

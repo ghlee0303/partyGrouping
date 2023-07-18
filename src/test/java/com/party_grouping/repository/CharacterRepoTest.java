@@ -1,8 +1,6 @@
 package com.party_grouping.repository;
 
 import com.party_grouping.config.SpringConfig;
-import com.party_grouping.config.TestConfig;
-import com.party_grouping.dto.CharacterDto;
 import com.party_grouping.entity.CharacterEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

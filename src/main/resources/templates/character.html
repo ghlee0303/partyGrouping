@@ -38,6 +38,7 @@
 </th:block>
 <body>
 <div>
+    <button id="testBtn">테스트용</button>
     <div id="container">
         <div id="features">
             <th:block th:replace="~{fragments/header :: headerFragment}"></th:block>
@@ -46,7 +47,7 @@
             </button>
             <div class="collapse" id="characterSearch">
                 <div class="card card-body">
-                    <div id="container-character-search">
+                    <div id="container-search">
                         <select class="search-select">
                             <option value="all">전체</option>
                             <option value="adventure">모험단</option>
@@ -61,7 +62,6 @@
                         </select>
                         <input
                                 type="text"
-                                placeholder="캐릭터명"
                                 class="input"
                         />
                         <button class="button">검색</button>
@@ -69,6 +69,35 @@
 
                     <div id="searched" class="container-character"> </div>
                 </div>
+            </div>
+
+            <div class="container-filter">
+                <div class="form-check form-check-inline form-check-reverse">
+                    <label class="form-check-label" for="ispinsCheckbox">
+                        <img src="image/이스핀즈" alt="">
+                    </label>
+                    <input class="form-check-input" type="checkbox" id="ispinsCheckbox" value="ispins">
+                </div>
+                <div class="form-check form-check-inline form-check-reverse">
+                    <label class="form-check-label" for="dimenCheckbox">
+                        <img src="image/차원회랑" alt="">
+                    </label>
+                    <input class="form-check-input" type="checkbox" id="dimenCheckbox" value="dimension">
+                </div>
+                <div class="form-check form-check-inline form-check-reverse">
+                    <label class="form-check-label" for="bakalCheckbox">
+                        <img src="image/기계혁명" alt="">
+                    </label>
+                    <input class="form-check-input" type="checkbox" id="bakalCheckbox" value="bakal">
+                </div>
+                <div class="form-check form-check-inline form-check-reverse" style="position: relative; top: -6px;">
+                    <label class="form-check-label" for="clearCheckbox">
+                        클리어
+                    </label>
+                    <input class="form-check-input" type="checkbox" id="clearCheckbox" value="clear">
+                </div>
+                <button type="button" class="btn btn-secondary filter">정렬</button>
+                <button type="button" class="btn btn-secondary init">초기화</button>
             </div>
 
             <div class="container-character main-list">

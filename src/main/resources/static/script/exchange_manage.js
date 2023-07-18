@@ -1,4 +1,4 @@
-let characterObject = {};
+let characterObj = {};
 let adventureName = null;
 
 window.onload = async function () {
@@ -8,21 +8,21 @@ window.onload = async function () {
 
 function setUp() {
     return requestExchangeSessionPage(1)
-        .then(data => constructorExchangePartyList(data))
-        .then(async exchangeList => {
-            for (const exchange of exchangeList) {
-                await createExchangeMain(exchange);
+        .then(async exchangeResList => {
+            for (const res of exchangeResList) {
+                await createExchangeMainDiv(res);
             }
         });
 }
 
 function eventBinding() {
-    document.querySelector("#container-character-search .button").addEventListener("click", characterSearch);
+    document.querySelector("#container-search .button").addEventListener("click", characterSearch);
     document.getElementsByClassName("modal-btn")[1].addEventListener("click", exchangeCreation);
+    document.getElementById("testBtn").addEventListener("click", testBtnClick);
 }
 
 function characterSearch() {
-    const parentElement = document.getElementById("container-character-search");
+    const parentElement = document.getElementById("container-search");
     const name = parentElement.querySelector(".input").value;
     const type = parentElement.querySelector(".search-select").value;
 
@@ -37,7 +37,8 @@ function characterStatus(event) {
     const server = character.getAttribute('server');
 
     requestCharacterStatus(apiId, server)
-        .then((data) => createExchangeCharacter(data))
+        .then((data) => createExchangeCharacterDiv(data))
+        .then(() => initSearchedDiv())
         .catch((err) => catchHandler(err));
 }
 
@@ -57,13 +58,14 @@ async function createSearchCharacterList(characterList) {
 }
 
 // 교환 파티 캐릭터
-async function createExchangeCharacter(character) {
-    if (characterObject[character.name]) {
+async function createExchangeCharacterDiv(res) {
+    const character = res.character;
+    if (characterObj[character.name]) {
         reject(new Error("이미 등록된 캐릭터입니다."));
         return;
     }
 
-    if (Object.keys(characterObject).length >= 4) {
+    if (Object.keys(characterObj).length >= 4) {
         reject(new Error("캐릭터는 최대 4개까지 등록할 수 있습니다."));
         return;
     }
@@ -82,10 +84,11 @@ async function createExchangeCharacter(character) {
     trashIcon.addEventListener('click', characterTrashIconClickEvent);
     characterDiv.appendChild(trashIcon);
     characterDiv.appendChild(createItemDiv(character));
+    characterDiv.appendChild(createDungeonIcon(res.dungeon));
 
     exchangeCharacters.appendChild(characterDiv);
 
-    characterObject[character.name] = character;
+    characterObj[character.name] = res;
     adventureName = character.adventureName;
 
     return character;
@@ -96,33 +99,32 @@ async function createExchangeCharacter(character) {
 function characterTrashIconClickEvent() {
     const parent = this.parentElement; // parent 요소
     const name = parent.querySelector(".character-name").innerText;
-    delete characterObject[name];
-    if (Object.keys(characterObject).length === 0)
+    delete characterObj[name];
+    if (Object.keys(characterObj).length === 0)
         adventureName = null;
 
     parent.remove();
 }
 
+// 교환파티 생성
 function exchangeCreation() {
-    requestExchangeCreation(characterObject)
-        .then((id) => {
-            const e = new ExchangeParty();
-            e.creation(id, null, characterObject);
-            return e;
+    requestExchangeCreation(characterObj, adventureName)
+        .then(id => {
+            return new ExchangeParty(id, characterObj);
         })
-        .then(exchangeParty => createExchangeMain(exchangeParty))
+        .then(exchangeRes => createExchangeMainDiv(exchangeRes))
         .then(() => {
             modalClear();
-            characterObject = {};
+            characterObj = {};
             adventureName = null;
         })
         .catch((err) => catchHandler(err));
 }
 
 // 메인 화면에 생성할 교환 파티 div
-async function createExchangeMain(exchangeParty) {
+async function createExchangeMainDiv(exchangeRes) {
     const containerParty = document.getElementsByClassName("container-party")[0];
-    const containerExchange = createExchangeDiv(exchangeParty);
+    const containerExchange = createExchangeDiv(exchangeRes);
 
     const exchangeKeySpan = (containerExchange).querySelector(".exchange-key");
     exchangeKeySpan.addEventListener("click", exchangeCodeClickEvent);
@@ -137,7 +139,7 @@ async function createExchangeMain(exchangeParty) {
 
     containerParty.insertBefore(containerExchange, containerParty.firstChild);
 
-    return exchangeParty;
+    return exchangeRes;
 }
 
 function trashIconClickEvent() {
@@ -187,15 +189,12 @@ function modalClear() {
     exchangeModal.querySelector(".exchange-characters").innerHTML = "";
 }
 
-function exchangePostBodyGenerated() {
-    const keys = Object.keys(characterObject);
-    const apiIdList = keys.map((name) => {
-        return characterObject[name].apiId;
-    });
-    const server = characterObject[keys[0]].server
-
-    return {
-        server,
-        "apiIdList": apiIdList
-    };
+async function initSearchedDiv() {
+    const searched = document.getElementById("searched");
+    searched.innerHTML = "";
 }
+
+function testBtnClick() {
+    console.log(characterObj);
+}
+

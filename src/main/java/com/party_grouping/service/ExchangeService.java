@@ -6,7 +6,9 @@ import com.party_grouping.exception.ApiException;
 import com.party_grouping.exception.ErrorCode;
 import com.party_grouping.repository.ExchangeRepo;
 import com.party_grouping.request.CharacterRequest;
-import com.party_grouping.request.ExchangeRequestDto;
+import com.party_grouping.request.ExchangeRequest;
+import com.party_grouping.response.CharacterResponse;
+import com.party_grouping.response.ExchangeResponse;
 import com.party_grouping.util.ApiUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,24 +29,27 @@ public class ExchangeService {
     }
 
     @Transactional
-    public ExchangeDto save(ExchangeRequestDto exchangeRequestDto) {
-        if (ApiUtils.isDuplicate(exchangeRequestDto.getApiIdList())) {
+    public ExchangeDto save(ExchangeRequest exchangeRequest) {
+        if (ApiUtils.isDuplicate(exchangeRequest.getApiIdList())) {
             throw new ApiException(ErrorCode.PARTY_MEMBERS_DUPLICATE);
         }
 
-        ExchangeDto exchangeDto = exchangeRepo.save(exchangeRequestDto);
+        ExchangeDto exchangeDto = exchangeRepo.save(exchangeRequest);
         System.out.println(exchangeDto);
 
         return exchangeDto;
     }
 
     public ExchangeDto findExchange(Integer exchangeKey) {
-        System.out.println("exc");
         return exchangeRepo.findExchangeByKey(exchangeKey).orElse(null);
     }
 
     public List<ExchangeDto> findExchangeList(List<Integer> id) {
-        return exchangeRepo.findExchangeListId(id);
+        return exchangeRepo.findExchangeList(id);
+    }
+
+    public List<ExchangeDto> findExchangeByAdventure(String adventureName) {
+        return exchangeRepo.findExchangeByAdventure(adventureName);
     }
 
     @Transactional
@@ -73,6 +78,23 @@ public class ExchangeService {
         return characterService.characterStatusList(true, characterRequestList);
     }
 
+    public ExchangeResponse createResponse(ExchangeDto exchangeDto) {
+        List<CharacterDto> characterDtoList = new ArrayList<>();
+        characterDtoList.add(exchangeDto.getCharacter1());
+        characterDtoList.add(exchangeDto.getCharacter2());
+        characterDtoList.add(exchangeDto.getCharacter3());
+        characterDtoList.add(exchangeDto.getCharacter4());
+
+        List<CharacterResponse> characterResponseList = characterService.createResponseList(characterDtoList);
+        return ExchangeResponse
+                .builder()
+                .id(exchangeDto.getId())
+                .exchangeKey(exchangeDto.getExchangeKey())
+                .adventureName(exchangeDto.getAdventureName())
+                .characterList(characterResponseList)
+                .build();
+    }
+
     private void addCharacterReqList(List<CharacterRequest> characterRequestList, CharacterDto characterDto) {
         characterRequestList.add(new CharacterRequest(characterDto.getApiId(), characterDto.getServer()));
     }
@@ -86,5 +108,10 @@ public class ExchangeService {
         }
 
         return exchangeKey;
+    }
+
+    private void validateAdventure(ExchangeRequest requestDto) {
+
+
     }
 }

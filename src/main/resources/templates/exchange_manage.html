@@ -43,6 +43,7 @@
 </th:block>
 <body>
 <div>
+  <button id="testBtn">테스트용</button>
   <!-- Modal -->
   <div class="modal fade" id="exchangeModal" tabindex="-1" aria-labelledby="exchangeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
@@ -55,7 +56,7 @@
 
         <div class="modal-body">
           <div id="container-modal">
-            <div id="container-character-search">
+            <div id="container-search">
               <select class="search-select">
                 <option value="all">전체</option>
                 <option value="adventure">모험단</option>
@@ -70,7 +71,6 @@
               </select>
               <input
                       type="text"
-                      placeholder="캐릭터명"
                       class="input"
               />
               <button class="button">검색</button>

@@ -6,6 +6,7 @@ import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class ApiUtils {
@@ -18,14 +19,21 @@ public class ApiUtils {
                 .orElse(null);
     }
 
-    public static LocalDateTime getLastThursdayOfWeek() {
+    // 이번 던요일 계산
+    public static LocalDateTime getNowDunDate( ) {
         LocalDateTime date = LocalDateTime.now();
-        LocalDateTime lastThursday;
-        DayOfWeek dayOfWeek = date.getDayOfWeek();
-        int daysToAdd = dayOfWeek.getValue() >= DayOfWeek.THURSDAY.getValue() ? 0 : -7;
-        lastThursday = date.plusDays(daysToAdd).with(DayOfWeek.THURSDAY).with(LocalTime.of(10, 0, 0));
+        int daysToAdd = date.getDayOfWeek().getValue() >= DayOfWeek.THURSDAY.getValue() ? 0 : -7;
+        return getLastOrNextThursday(date, daysToAdd);
+    }
 
-        return lastThursday;
+    public static LocalDateTime getNextDunDate() {
+        LocalDateTime date = LocalDateTime.now();
+        int daysToAdd = date.getDayOfWeek().getValue() < DayOfWeek.THURSDAY.getValue() ? 0 : 7;
+        return getLastOrNextThursday(date, daysToAdd);
+    }
+
+    private static LocalDateTime getLastOrNextThursday(LocalDateTime date, int daysToAdd) {
+        return date.plusDays(daysToAdd).with(DayOfWeek.THURSDAY).with(LocalTime.of(10, 0, 0));
     }
 
     public static long daysBetween(LocalDateTime date1, LocalDateTime date2) {

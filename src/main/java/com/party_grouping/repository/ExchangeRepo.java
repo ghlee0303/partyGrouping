@@ -5,7 +5,7 @@ import com.party_grouping.entity.CharacterEntity;
 import com.party_grouping.entity.ExchangeEntity;
 import com.party_grouping.exception.ApiException;
 import com.party_grouping.exception.ErrorCode;
-import com.party_grouping.request.ExchangeRequestDto;
+import com.party_grouping.request.ExchangeRequest;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -32,19 +32,18 @@ public class ExchangeRepo {
     }
 
     @Transactional
-    public ExchangeDto save(ExchangeRequestDto exchangeRequestDto) {
-        String server = exchangeRequestDto.getServer();
-        List<CharacterEntity> characterEntityList = exchangeRequestDto.getApiIdList().stream().map(apiId ->
+    public ExchangeDto save(ExchangeRequest exchangeRequest) {
+        String server = exchangeRequest.getServer();
+        List<CharacterEntity> characterEntityList = exchangeRequest.getApiIdList().stream().map(apiId ->
                         characterRepo.findCharacterEntity(server, apiId)
                     .orElseThrow(() -> { throw new ApiException(ErrorCode.CHARACTER_NOT_FOUND); })
         ).collect(Collectors.toList());
 
         ExchangeEntity entity = createEntity(characterEntityList);
+        entity.setAdventureName(exchangeRequest.getAdventureName());
 
         em.persist(entity);
         em.flush();
-
-        System.out.println(entity.getId());
 
         return modelMapper.map(entity, ExchangeDto.class);
     }
@@ -70,10 +69,21 @@ public class ExchangeRepo {
                 .map(entity -> modelMapper.map(entity, ExchangeDto.class));
     }
 
-    public List<ExchangeDto> findExchangeListId(List<Integer> id) {
+    public List<ExchangeDto> findExchangeList(List<Integer> id) {
         List<ExchangeEntity> exchangeList = queryFactory
                 .selectFrom(exchangeEntity)
                 .where(exchangeEntity.id.in(id)
+                        .and(exchangeEntity.del_date.isNull()))
+                .fetch();
+
+        return exchangeList
+                .stream().map(exchange -> modelMapper.map(exchange, ExchangeDto.class)).toList();
+    }
+
+    public List<ExchangeDto> findExchangeByAdventure(String adventureName) {
+        List<ExchangeEntity> exchangeList = queryFactory
+                .selectFrom(exchangeEntity)
+                .where(exchangeEntity.adventureName.in(adventureName)
                         .and(exchangeEntity.del_date.isNull()))
                 .fetch();
 

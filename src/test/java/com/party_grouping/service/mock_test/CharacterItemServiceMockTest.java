@@ -2,6 +2,7 @@ package com.party_grouping.service.mock_test;
 
 import com.party_grouping.api.Api;
 import com.party_grouping.api.CharacterYaml;
+import com.party_grouping.api.DungeonYaml;
 import com.party_grouping.repository.CharacterRepo;
 import com.party_grouping.service.CharacterService;
 import com.party_grouping.service.api.DnfApiService;
@@ -19,7 +20,8 @@ public class CharacterItemServiceMockTest {
     private CharacterRepo characterRepo;
     private final Api api = new ApiRequestMock();
     private final CharacterYaml characterYaml = new CharacterYaml();
-    private final ApiService apiService = new DnfApiService(api, characterYaml);
+    private final DungeonYaml dungeonYaml = new DungeonYaml();
+    private final ApiService apiService = new DnfApiService(api, characterYaml, dungeonYaml);
     private CharacterService characterService;
 
 

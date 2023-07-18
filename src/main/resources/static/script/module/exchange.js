@@ -1,32 +1,16 @@
 class ExchangeParty {
-    constructor() {
-        this.id = null;
-        this.exchangeKey = null;
-        this.characters = [];
-    }
-
-    // 교환파티 등록 후 사용
-    creation(id, e, c) {
+    constructor(id, c) {
         this.id = id;
-        this.exchangeKey = e;
-        for (let objKey in c) {
-            this.characters.push(c[objKey]);
+        this.exchangeKey = null;
+        this.characterList = [];
+        for (let name in c) {
+            this.characterList.push(c[name]);
         }
-    }
-
-    // 교환파티 조회 후 사용
-    request(data) {
-        this.id = data.id;
-        this.exchangeKey = data.exchangeKey;
-        this.characters.push(data.character1);
-        this.characters.push(data.character2);
-        this.characters.push(data.character3);
-        this.characters.push(data.character4);
     }
 }
 
-function requestExchangeSearch(id) {
-    const serverUri = `/exchange_search?id=${id}`;
+function requestExchangeSearch(search, type) {
+    const serverUri = `/exchange_search?search=${search}&type=${type}`;
 
     return fetchData(serverUri, null)
         .then(data => { return data; })
@@ -45,10 +29,10 @@ function requestExchangeSessionPage(page) {
         });
 }
 
-function requestExchangeCreation(createExchange) {
+function requestExchangeCreation(characterObj, adventureName) {
     const serverUri = "/exchange_manage";
-    const keys = Object.keys(createExchange);
-    const exchangeReq = exchangePostBodyGenerated(keys, createExchange);
+    const keys = Object.keys(characterObj);
+    const exchangeReq = exchangePostBodyGenerated(keys, characterObj, adventureName);
 
     if (keys.length !== 4) {
         throw new Error("멤버가 4명이 되어야합니다.");
@@ -100,23 +84,24 @@ function requestExchangeCode(id) {
         .catch(error => {
             throw error;
         });
-
 }
 
-function exchangePostBodyGenerated(keys, createExchange) {
+function exchangePostBodyGenerated(keys, characterObj, adventureName) {
     const apiIdList = keys.map((name) => {
-        return createExchange[name].apiId;
+        return characterObj[name].character.apiId;
     });
-    const server = createExchange[keys[0]].server
+    const server = characterObj[keys[0]].character.server
 
     return {
         server,
+        "adventureName": adventureName,
         "apiIdList": apiIdList
     };
 }
 
-function createExchangeDiv(exchangeParty) {
-    const {id, exchangeKey, characters} = exchangeParty;
+function createExchangeDiv(exchangeRes) {
+    const {id, exchangeKey, characterList} = exchangeRes;
+    console.log(exchangeRes);
     const containerExchange = document.createElement('div');
     containerExchange.classList.add("container-exchange");
     containerExchange.setAttribute("id", id);
@@ -132,9 +117,10 @@ function createExchangeDiv(exchangeParty) {
     const exchangeCharacters = document.createElement('div');
     exchangeCharacters.classList.add("exchange-characters");
 
-    for (let c of characters) {
-        const characterDiv = createCharactersDiv(c);
-        characterDiv.appendChild(createItemDiv(c));
+    for (let characterRes of characterList) {
+        const characterDiv = createCharactersDiv(characterRes.character);
+        characterDiv.appendChild(createItemDiv(characterRes.character));
+        characterDiv.appendChild(createDungeonIcon(characterRes.dungeon));
         exchangeCharacters.appendChild(characterDiv);
     }
     containerExchange.appendChild(exchangeCharacters);

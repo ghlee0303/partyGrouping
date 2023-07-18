@@ -60,4 +60,5 @@ public class CharacterDto extends BaseDto {
         this.buffer = buffer;
         this.item = item;
     }
+
 }

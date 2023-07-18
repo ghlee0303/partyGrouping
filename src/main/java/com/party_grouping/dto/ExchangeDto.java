@@ -13,6 +13,7 @@ public class ExchangeDto extends BaseDto {
     protected Integer id;
 
     protected Integer exchangeKey;
+    protected String adventureName;
 
     protected CharacterDto character1;
     protected CharacterDto character2;

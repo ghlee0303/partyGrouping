@@ -1,12 +1,11 @@
 package com.party_grouping.service;
 
-import com.party_grouping.data.CharacterNode;
 import com.party_grouping.dto.CharacterDto;
-import com.party_grouping.dto.CharacterItemDto;
 import com.party_grouping.exception.ApiException;
 import com.party_grouping.exception.ErrorCode;
 import com.party_grouping.repository.CharacterRepo;
 import com.party_grouping.request.CharacterRequest;
+import com.party_grouping.response.CharacterResponse;
 import com.party_grouping.service.inter.ApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +34,7 @@ public class CharacterService {
     public CharacterDto characterStatus(String server, String characterApiId) {
         CharacterDto characterDto = dnfApiService.callCharacterStatus(server, characterApiId);
 
-        // 버퍼는 아이템 정보를 사용하지 않음
+        // 딜러만 아이템 정보를 사용
         if (!characterDto.isBuffer()) {
             characterDto.setItem(dnfApiService.callItem(server, characterApiId));
         }
@@ -46,22 +45,46 @@ public class CharacterService {
 
     public List<CharacterDto> characterSearch(String name, String type) {
         if (type.equals("adventure")) {
-            return characterRepo.findByAdventureDto(name);
+            return characterRepo.findCharacterByAdventure(name);
         }
 
         return dnfApiService.callSearch(name, type);
     }
 
-    public List<CharacterDto> characterStatusList(boolean apiUse, List<CharacterRequest> characterRequestList) {
-        List<CharacterDto> characterDtoList;
+    public Optional<CharacterDto> findCharacter(String server, String characterApiId) {
+        return characterRepo.findCharacterDto(server, characterApiId);
+    }
 
+    public List<CharacterDto> characterStatusList(boolean apiUse, List<CharacterRequest> characterRequestList) {
         if (apiUse) {
-            characterDtoList = characterStatusFromAPI(characterRequestList);
+            return characterStatusFromAPI(characterRequestList);
         } else {
-            characterDtoList = sortList(characterRepo.findStatusList(characterRequestList), characterRequestList);
+            return sortList(characterRepo.findStatusList(characterRequestList), characterRequestList);
+        }
+    }
+
+    public List<CharacterDto> characterAdventure(String adventureName) {
+        return characterRepo.findCharacterByAdventure(adventureName);
+    }
+
+    public CharacterResponse createResponse(CharacterDto characterDto) {
+        return CharacterResponse.builder()
+                .character(characterDto)
+                .dungeon(dnfApiService.callWeeklyDungeon(characterDto.getServer(), characterDto.getApiId()))
+                .build();
+    }
+
+    public List<CharacterResponse> createResponseList(List<CharacterDto> characterDtoList) {
+        List<CharacterResponse> responses = new ArrayList<>();
+
+        for (CharacterDto dto : characterDtoList) {
+            responses.add(CharacterResponse.builder()
+                    .character(dto)
+                    .dungeon(dnfApiService.callWeeklyDungeon(dto.getServer(), dto.getApiId()))
+                    .build());
         }
 
-        return characterDtoList;
+        return responses;
     }
 
     private List<CharacterDto> characterStatusFromAPI(List<CharacterRequest> characterRequestList) {
@@ -90,10 +113,5 @@ public class CharacterService {
         }
 
         return result;
-    }
-
-    public CharacterDto findCharacter(String server, String characterApiId) {
-        return characterRepo.findCharacterDto(server, characterApiId)
-                .orElseThrow(() -> { throw new ApiException(ErrorCode.CHARACTER_NOT_FOUND); });
     }
 }

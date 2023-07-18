@@ -11,7 +11,7 @@ spring:
         format_sql: true
 
   config:
-    import: classpath:/character.yml, classpath:/mysqlDB.yml
+    import: classpath:/dnfData.yml, classpath:/mysqlDB.yml
 
 logging.level:
   org.hibernate.SQL: false
@@ -23,6 +23,8 @@ server:
   error:
     whitelabel:
       enabled=false:
+
+image: "C:\\Users\\pjh13\\Desktop\\Fuck\\java-spring\\"
 # org.hibernate.type: trace
 # 파라미터 바인딩 된 것 까지 볼 수 있음
 

@@ -4,6 +4,7 @@ import com.party_grouping.api.Buff;
 import com.party_grouping.dto.CharacterDto;
 import com.party_grouping.dto.CharacterItemDto;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface ApiService {
@@ -13,4 +14,5 @@ public interface ApiService {
     CharacterItemDto callItem(String server, String characterApiId);
     String callCreature(String server, String characterApiId);
     String callAurora(String server, String characterApiId);
+    HashMap<String, String> callWeeklyDungeon(String server, String characterApiId);
 }

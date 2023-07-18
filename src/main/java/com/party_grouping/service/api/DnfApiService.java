@@ -3,6 +3,7 @@ package com.party_grouping.service.api;
 import com.party_grouping.api.Api;
 import com.party_grouping.api.Buff;
 import com.party_grouping.api.CharacterYaml;
+import com.party_grouping.api.DungeonYaml;
 import com.party_grouping.dto.CharacterDto;
 import com.party_grouping.dto.CharacterItemDto;
 import com.party_grouping.exception.ApiException;
@@ -13,11 +14,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,11 +28,13 @@ public class DnfApiService implements ApiService {
     private String apiKey;
     private final Api api;
     private final CharacterYaml characterYaml;
+    private final DungeonYaml dungeonYaml;
 
     @Autowired
-    public DnfApiService(Api api, CharacterYaml characterYaml) {
+    public DnfApiService(Api api, CharacterYaml characterYaml, DungeonYaml dungeonYaml) {
         this.api = api;
         this.characterYaml = characterYaml;
+        this.dungeonYaml = dungeonYaml;
     }
 
     // 캐릭터 검색
@@ -115,7 +117,7 @@ public class DnfApiService implements ApiService {
         JSONObject support = itemJsonArray.getJSONObject(10);   // 보조장비
 
         // 악세서리 마부
-        List<Integer> accessoryEnchantList = accessoryEnchantCalc(
+        List<Integer> accessoryEnchantList = calcAccessoryEnchant(
                 amulet.optJSONObject("enchant"),
                 wrist.optJSONObject("enchant"),
                 ring.optJSONObject("enchant")
@@ -128,11 +130,11 @@ public class DnfApiService implements ApiService {
                 .amulet(accessoryEnchantList.get(0))                            // 목걸이 마부
                 .wrist(accessoryEnchantList.get(1))                             // 팔찌 마부
                 .ring(accessoryEnchantList.get(2))                              // 반지 마부
-                .siv(supportEnchantCalc(support.optJSONObject("enchant")))  // 시브마부  유무
+                .siv(calcSupportEnchant(support.optJSONObject("enchant")))  // 시브마부  유무
                 .creature(isEndCreature(callCreature(server, characterApiId)))  // 종결 크리쳐 유무
                 .aurora(isEndAurora(callAurora(server, characterApiId)))        // 종결 오라 유무
                 .title(isEndTitle(title.optString("itemName")))             // 종결 칭호 유무
-                .enchantSkillBonus(enchantSkillBonusCalc(                       // 어벨 스증마부 합
+                .enchantSkillBonus(calcEnchantSkillBonus(                       // 어벨 스증마부 합
                         shoulder.optJSONObject("enchant"),
                         belt.optJSONObject("enchant")))
                 .build();
@@ -167,8 +169,61 @@ public class DnfApiService implements ApiService {
 
         return null;
     }
+    
+    // 이번 주에 클리어한 던전(레기온, 레이드) 정보 요청
+    @Override
+    public HashMap<String, String> callWeeklyDungeon(String server, String characterApiId) {
+        String dunDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(ApiUtils.getNowDunDate());
+        String now = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(LocalDateTime.now());
+        String url = String.format("servers/%s/characters/%s/timeline?code=209,201&startDate=%s&endDate=%s&apikey=%s",
+                server, characterApiId, dunDate, now, apiKey);
 
-    private Integer enchantSkillBonusCalc(JSONObject shoulder, JSONObject belt) {
+        JSONArray timeLine = new JSONObject(api.callRequest(url))
+                .getJSONObject("timeline")
+                .optJSONArray("rows");
+
+        HashMap<String, String> result = new HashMap<>();
+
+        for (int i = 0; i < timeLine.length(); i++) {
+            JSONObject rows = timeLine.getJSONObject(i);
+            clsfcDungeon(rows, result);
+        }
+
+        return result;
+    }
+
+    // 던전 분류
+    // 레기온, 레이드 등의 던전을 분류함
+    private void clsfcDungeon(JSONObject rows, HashMap<String, String> result) {
+        HashMap<String, String> regionMap = new HashMap<>();
+        regionMap.put("이스핀즈", "ispins");
+        regionMap.put("차원회랑", "dimension");
+
+        HashMap<String, String> raidMap = new HashMap<>();
+        raidMap.put("기계 혁명", "bakal");
+
+        int code = rows.optInt("code");
+        String date = rows.getString("date");
+        JSONObject data = rows.getJSONObject("data");
+        switch (code) {
+            case 201 -> {
+                String raidName = data.optString("raidName");
+                putIfKeyExists(raidMap, raidName, result, date);
+            }
+            case 209 -> {
+                String regionName = data.optString("regionName");
+                putIfKeyExists(regionMap, regionName, result, date);
+            }
+        }
+    }
+
+    private void putIfKeyExists(Map<String, String> map, String key, Map<String, String> result, String value) {
+        if (map.containsKey(key)) {
+            result.put(map.get(key), value);
+        }
+    }
+
+    private Integer calcEnchantSkillBonus(JSONObject shoulder, JSONObject belt) {
         String find = "explain";
         String enchantShoulder = findJsonString(shoulder, find);
         String enchantBelt = findJsonString(belt, find);
@@ -193,7 +248,7 @@ public class DnfApiService implements ApiService {
      }
 
      // 악세서리 속성 강화 수치 int List
-    private List<Integer> accessoryEnchantCalc(JSONObject amulet, JSONObject wrist, JSONObject ring) {
+    private List<Integer> calcAccessoryEnchant(JSONObject amulet, JSONObject wrist, JSONObject ring) {
         String find = "status";
         List<JSONArray> jsonArrayList = Arrays.asList(
                 findJsonArray(amulet, find),
@@ -226,7 +281,7 @@ public class DnfApiService implements ApiService {
         };
     }
 
-    private boolean supportEnchantCalc(JSONObject support) {
+    private boolean calcSupportEnchant(JSONObject support) {
         JSONArray supportJsonArray = findJsonArray(support, "status");
 
         if (supportJsonArray == null || supportJsonArray.length() != 4) {

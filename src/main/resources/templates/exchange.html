@@ -47,10 +47,13 @@
     <div id="features">
       <th:block th:replace="~{fragments/header :: headerFragment}"></th:block>
 
-      <div id="container-exchange-search" style="margin: 0 auto;">
+      <div id="container-search" style="margin: 0 auto;">
+        <select class="search-select">
+          <option value="number">파티 번호</option>
+          <option value="adventure">모험단</option>
+        </select>
         <input
                 type="text"
-                placeholder="파티 번호"
                 class="input"
                 style="width: 500px;"
         />

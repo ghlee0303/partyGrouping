@@ -2,7 +2,9 @@ package com.party_grouping.controller;
 
 import com.party_grouping.dto.CharacterDto;
 import com.party_grouping.request.CharacterRequest;
+import com.party_grouping.response.CharacterResponse;
 import com.party_grouping.service.CharacterService;
+import com.party_grouping.service.api.DnfApiService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.Data;
@@ -21,6 +23,8 @@ import java.util.*;
 public class CharacterController {
     @Autowired
     private CharacterService characterService;
+    @Autowired
+    private DnfApiService dnfApiService;
     HttpHeaders header;
     private static final String COOKIE_NAME = "character";
 
@@ -34,6 +38,27 @@ public class CharacterController {
         return "character";
     }
 
+    @DeleteMapping("character")
+    @ResponseBody
+    public ResponseEntity<Boolean> deleteCharacter(HttpSession session,
+                                   @RequestParam("apiId") String apiId,
+                                   @RequestParam("server") String server) {
+        List<CharacterRequest> characterSession = getSessionCharacter(session);
+        int beforeIndex = characterSession.size();
+        characterSession = characterSession.stream()
+                .filter(character -> !(character.getApiId().equals(apiId) && character.getServer().equals(server)))
+                .toList();
+        int afterIndex = characterSession.size();
+
+        if (beforeIndex == afterIndex) {
+            return ResponseEntity.ok(false);
+        }
+
+        setSessionCharacter(session, characterSession);
+
+        return ResponseEntity.ok(true);
+    }
+
     @GetMapping("character_search")
     @ResponseBody
     public ResponseEntity<List<CharacterDto>> getCharacterSearch(@RequestParam(value = "name") String name,
@@ -43,35 +68,38 @@ public class CharacterController {
 
     @GetMapping("character_status")
     @ResponseBody
-    public ResponseEntity<CharacterDto> getCharacterStatus(HttpSession session,
+    public ResponseEntity<CharacterResponse> getCharacterStatus(HttpSession session,
                                                            @RequestParam("apiId") String apiId,
                                                            @RequestParam("server") String server,
                                                            @RequestParam("session") boolean sessionUse) {
-        CharacterDto characterDto = characterService.characterStatus(server, apiId);
         if (sessionUse) {
             List<CharacterRequest> characterSession = getSessionCharacter(session);
             characterSession.add(new CharacterRequest(apiId, server));
             setSessionCharacter(session, characterSession);
         }
 
-        return ResponseEntity.ok(characterDto);
+        CharacterResponse characterResponse = characterService.createResponse(characterService.characterStatus(server,apiId));
+
+        return ResponseEntity.ok(characterResponse);
+    }
+
+    // 던전 거름망 추가
+    @GetMapping("character_adventure")
+    @ResponseBody
+    public ResponseEntity<List<CharacterResponse>> getCharacterAdventure(@RequestParam("adventure") String adventureName) {
+        List<CharacterResponse> responses = characterService.createResponseList(characterService.characterAdventure(adventureName));
+
+        return ResponseEntity.ok(responses);
     }
 
     @GetMapping("character_session")
     @ResponseBody
-    public ResponseEntity<List<CharacterDto>> getCharacterSession(HttpSession session) {
+    public ResponseEntity<List<CharacterResponse>> getCharacterSession(HttpSession session) {
         List<CharacterRequest> requestList = getSessionCharacter(session);
+        List<CharacterResponse> responses = characterService.createResponseList(characterService.characterStatusList(false, requestList));
 
-        return ResponseEntity.ok(characterService.characterStatusList(false, requestList));
-    }
-
-    @PostMapping("character_status_list")
-    @ResponseBody
-    public ResponseEntity<List<CharacterDto>> getCharacterStatusList(@RequestBody(required = false) String json) {
-        JSONObject jsonObject = new JSONObject(json);
-        boolean apiUse = jsonObject.optInt("apiUse") != 0;
-
-        return ResponseEntity.ok(characterService.characterStatusList(apiUse, characterRequestList(jsonObject)));
+        System.out.println(responses);
+        return ResponseEntity.ok(responses);
     }
 
     private List<CharacterRequest> characterRequestList(JSONObject jsonObject) {
@@ -92,9 +120,10 @@ public class CharacterController {
 
     @SuppressWarnings("unchecked")
     private List<CharacterRequest> getSessionCharacter(HttpSession session) {
-        List<CharacterRequest> characterSession = (List<CharacterRequest>) session.getAttribute("character");
-        if (characterSession == null) {
-            characterSession = new ArrayList<>();
+        Object sessionData = session.getAttribute("character");
+        List<CharacterRequest> characterSession = new ArrayList<>();
+        if (sessionData != null) {
+            characterSession.addAll((List<CharacterRequest>) sessionData);
         }
         return characterSession;
     }

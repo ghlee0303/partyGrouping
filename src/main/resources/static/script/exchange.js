@@ -3,26 +3,25 @@ window.onload = function () {
 }
 
 function eventBinding() {
-    document.querySelector("#container-exchange-search .button").addEventListener("click", exchangeSearch);
+    document.querySelector("#container-search .button").addEventListener("click", exchangeSearch);
 }
 
 function exchangeSearch() {
     const parentElement = this.parentElement;
-    const exchangeKey = parentElement.querySelector(".input").value;
-    requestExchangeSearch(exchangeKey)
-        .then((data) => {
-            let e = new ExchangeParty();
-            e.request(data);
-            return e;
-        })
-        .then((exchangeParty) => createExchangeMain(exchangeParty));
+    const search = parentElement.querySelector(".input").value;
+    const type = parentElement.querySelector(".search-select").value;
+    requestExchangeSearch(search, type)
+        .then((resList) => {
+            for (let res of resList) {
+                createExchangeMainDiv(res);
+            }
+        });
 }
 
-async function createExchangeMain(exchangeParty) {
+function createExchangeMainDiv(exchangeParty) {
     const containerParty = document.getElementsByClassName("container-party")[0];
     const containerExchange = createExchangeDiv(exchangeParty);
     containerParty.insertBefore(containerExchange, containerParty.firstChild);
 
     return exchangeParty;
-
 }

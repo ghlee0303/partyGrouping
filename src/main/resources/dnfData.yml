@@ -38,3 +38,12 @@ character:
     - "쁘띠 폭룡왕 바칼"
     - "축제의 여왕 페리아"
     - "SD 신부 세리아"
+
+dungeon:
+  region:
+    "[이스핀즈]": "ispins"
+    "[차원회랑]": "dimension"
+
+  raid:
+    "[기계 혁명]": "bakal"
+

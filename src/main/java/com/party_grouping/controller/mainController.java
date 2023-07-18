@@ -32,7 +32,7 @@ public class mainController {
 
     @GetMapping("/")
     public String getMain() {
-        return "index";
+        return "redirect:/character";
     }
 
     @GetMapping("data_insert")

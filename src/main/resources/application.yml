@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: API-KEY
+    active: local
 
   jpa:
     hibernate:
@@ -10,8 +10,14 @@ spring:
         # show_sql: true
         format_sql: true
 
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
   config:
-    import: classpath:/dnfData.yml, classpath:/mysqlDB.yml
+    import: classpath:/dnfData.yml
 
 logging.level:
   org.hibernate.SQL: false
@@ -24,7 +30,8 @@ server:
     whitelabel:
       enabled=false:
 
-image: "C:\\Users\\pjh13\\Desktop\\Fuck\\java-spring\\"
+image: ${IMAGE_PATH}
+dnf-api-key: ${DNF_API_KEY}
 # org.hibernate.type: trace
 # 파라미터 바인딩 된 것 까지 볼 수 있음
 

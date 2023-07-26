@@ -26,9 +26,7 @@ server:
   session:
     tracking-modes: cookie
 
-  error:
-    whitelabel:
-      enabled=false:
+  port: 80
 
 image: ${IMAGE_PATH}
 dnf-api-key: ${DNF_API_KEY}

@@ -21,11 +21,9 @@ public class ImageController {
             throws IOException {
         FileInputStream fis = null;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        StringBuffer sb = new StringBuffer();
-        String path = sb.append(fileDir)
-                .append(imagename)
-                .append(".JPG")
-                .toString();
+                String path = fileDir +
+                        imagename +
+                        ".JPG";
 
         try {
             fis = new FileInputStream(path);

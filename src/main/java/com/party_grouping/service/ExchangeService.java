@@ -35,7 +35,6 @@ public class ExchangeService {
         }
 
         ExchangeDto exchangeDto = exchangeRepo.save(exchangeRequest);
-        System.out.println(exchangeDto);
 
         return exchangeDto;
     }

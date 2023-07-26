@@ -21,8 +21,7 @@ function eventBinding() {
     document.querySelector("#container-search .button").addEventListener("click", characterSearch);
     document.querySelector(".container-filter .filter").addEventListener("click", dungeonFilter);
     document.querySelector(".container-filter .init").addEventListener("click", initFilter);
-    document.getElementById("testBtn").addEventListener("click", testBtnClick);
-    document.getElementById("searched").addEventListener("click", characterSearchClickEvent);
+    document.getElementById("searched").addEventListener("click", characterStatus);
 }
 
 function characterSearch() {
@@ -46,7 +45,7 @@ async function createSearchCharacterList(searchedList) {
     return searchedList;
 }
 
-function characterSearchClickEvent(event) {
+function characterStatus(event) {
     const clicked = event.target;
     const target = clicked.classList.contains('characters') ? clicked : clicked.parentNode;
     const apiId = target.getAttribute('apiId');

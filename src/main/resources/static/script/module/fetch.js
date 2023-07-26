@@ -14,6 +14,7 @@ function fetchData(url, option) {
                     throw new Error("500");
                 } else {
                     const text = await response.text();
+                    alert(text);
                     throw new Error(text);
                 }
             }
@@ -27,6 +28,5 @@ function catchHandler(err) {
     if (err.message === "500") {
         return;
     }
-    alert(err.message);
     console.error(err.message);
 }

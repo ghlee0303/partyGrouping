@@ -18,7 +18,6 @@ function setUp() {
 function eventBinding() {
     document.querySelector("#container-search .button").addEventListener("click", characterSearch);
     document.getElementsByClassName("modal-btn")[1].addEventListener("click", exchangeCreation);
-    document.getElementById("testBtn").addEventListener("click", testBtnClick);
 }
 
 function characterSearch() {

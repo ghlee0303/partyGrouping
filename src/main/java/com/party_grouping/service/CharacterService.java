@@ -1,18 +1,18 @@
 package com.party_grouping.service;
 
 import com.party_grouping.dto.CharacterDto;
-import com.party_grouping.exception.ApiException;
-import com.party_grouping.exception.ErrorCode;
 import com.party_grouping.repository.CharacterRepo;
 import com.party_grouping.request.CharacterRequest;
 import com.party_grouping.response.CharacterResponse;
 import com.party_grouping.service.inter.ApiService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+@Slf4j
 @Transactional
 @Service
 public class CharacterService {

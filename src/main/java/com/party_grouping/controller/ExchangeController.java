@@ -6,13 +6,13 @@ import com.party_grouping.dto.ExchangeDto;
 import com.party_grouping.exception.ApiException;
 import com.party_grouping.exception.ErrorCode;
 import com.party_grouping.request.ExchangeRequest;
-import com.party_grouping.response.CharacterResponse;
 import com.party_grouping.response.ExchangeResponse;
 import com.party_grouping.service.CharacterService;
 import com.party_grouping.service.ExchangeService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +22,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Controller
 public class ExchangeController {
     @Autowired
@@ -50,8 +50,11 @@ public class ExchangeController {
     @PostMapping("exchange_manage")
     @ResponseBody
     public ResponseEntity<Integer> uploadExchange(HttpSession session, @RequestBody String json) {
+        ExchangeRequest request = parsingExchangeRequest(json);
+        String logging =  "server : " + request.getServer() + " / adventureName : " + request.getAdventureName() + " / apiIdList : " + request.getApiIdList();
+        log.info("POST/Exchange Upload [{}] | Session ID [{}]", logging, session.getId());
         List<Integer> exchangeSession = getSessionExchange(session);
-        ExchangeDto exchangeDto = exchangeService.save(parsingExchangeRequest(json));
+        ExchangeDto exchangeDto = exchangeService.save(request);
         exchangeSession.add(exchangeDto.getId());
         setSessionExchange(session, exchangeSession);
 
@@ -61,6 +64,8 @@ public class ExchangeController {
     @DeleteMapping("exchange_manage")
     @ResponseBody
     public ResponseEntity<Boolean> deleteExchange(HttpSession session, @RequestParam("id") Integer id) {
+        String logging =  "ID : " + id;
+        log.info("DELETE/Exchange Delete [{}] | Session ID [{}]", logging, session.getId());
         List<Integer> exchangeSession = getSessionExchange(session);
 
         // 세션에 값이 있는지 먼저 검증함
@@ -81,9 +86,13 @@ public class ExchangeController {
 
     @GetMapping("exchange_search")
     @ResponseBody
-    public ResponseEntity<List<ExchangeResponse>> searchExchange(@RequestParam(value = "search") String search,
-                                                            @RequestParam(value = "type") String type) {    // adventure = 모험단 검색,
+    public ResponseEntity<List<ExchangeResponse>> searchExchange(HttpSession session,
+                                                                 @RequestParam(value = "search") String search,
+                                                                 @RequestParam(value = "type") String type) {    // adventure = 모험단 검색,
                                                                                                             // number = 파티번호 검색
+        String logging =  "search : " + search + " / type : " + type;
+        log.info("GET/Exchange Search [{}] | Session ID [{}]", logging, session.getId());
+
         List<ExchangeDto> exchangeDtoList;
 
         switch (type) {
@@ -107,6 +116,7 @@ public class ExchangeController {
     @ResponseBody
     public ResponseEntity<List<ExchangeResponse>> searchExchangeListBySession(HttpSession session,
                                                                          @RequestParam("page") Integer page) {
+        log.info("GET/Exchange Session | Session ID [{}]", session.getId());
         List<ExchangeResponse> responseList = exchangeService.findExchangeList(getSessionExchange(session)).stream()
                 .map(exchangeService::createResponse).toList();
 

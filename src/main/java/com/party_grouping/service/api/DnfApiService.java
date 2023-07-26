@@ -10,6 +10,7 @@ import com.party_grouping.exception.ApiException;
 import com.party_grouping.exception.ErrorCode;
 import com.party_grouping.service.inter.ApiService;
 import com.party_grouping.util.ApiUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
+@Slf4j
 public class DnfApiService implements ApiService {
     @Value("${dnf-api-key}")
     private String apiKey;
@@ -41,14 +43,17 @@ public class DnfApiService implements ApiService {
     @Override
     public List<CharacterDto> callSearch(String name, String type) {
         String url = String.format("servers/%s/characters?characterName=%s&wordType=full&limit=8&apikey=%s",type, name, apiKey);
+        List<CharacterDto> characterDtoList = parsingCharacterListJson(api.callRequest(url));
+        String logging = "name : " + name + " / type : " + type;
+        log.info("Search API [{}]", logging);
 
-        return parsingCharacterListJson(api.callRequest(url));
+        return characterDtoList;
     }
 
     // 캐릭터 상세정보
     @Override
-    public CharacterDto callCharacterStatus(String server, String characterApiId) {
-        String url = String.format("servers/%s/characters/%s/status?apikey=%s", server, characterApiId, apiKey);
+    public CharacterDto callCharacterStatus(String server, String apiId) {
+        String url = String.format("servers/%s/characters/%s/status?apikey=%s", server, apiId, apiKey);
 
         String jsonString = api.callRequest(url);
         JSONObject jsonObject = new JSONObject(jsonString);
@@ -64,7 +69,10 @@ public class DnfApiService implements ApiService {
         characterDto.setFame(fame);
         characterDto.setAdventureName(adventureName);
         characterDto.setServer(server);
-        characterDto.setBuff(callBuffSkill(server, characterApiId));
+        characterDto.setBuff(callBuffSkill(server, apiId));
+
+        String logging = "apiId : " + apiId + " / server : " + server;
+        log.info("Status API [{}]", logging);
 
         return characterDto;
     }
@@ -72,8 +80,8 @@ public class DnfApiService implements ApiService {
     // 캐릭터 버프 스킬
     // 착용중인 버프 장비를 요청한 후 버프 스킬을 가져옴
     @Override
-    public Buff callBuffSkill(String server, String characterApiId) {
-        String url = String.format("servers/%s/characters/%s/skill/buff/equip/equipment?apikey=%s", server, characterApiId, apiKey);
+    public Buff callBuffSkill(String server, String apiId) {
+        String url = String.format("servers/%s/characters/%s/skill/buff/equip/equipment?apikey=%s", server, apiId, apiKey);
 
         JSONObject buff = new JSONObject(api.callRequest(url))
                 .getJSONObject("skill")
@@ -96,8 +104,8 @@ public class DnfApiService implements ApiService {
     // 무기 강화/증폭, 시나오칭 유무, 악세 마부, 어벨 스증마부 합을 계산
     // 320작, 커스텀 갯수
     @Override
-    public CharacterItemDto callItem(String server, String characterApiId) {
-        String url = String.format("servers/%s/characters/%s/equip/equipment?apikey=%s", server, characterApiId, apiKey);
+    public CharacterItemDto callItem(String server, String apiId) {
+        String url = String.format("servers/%s/characters/%s/equip/equipment?apikey=%s", server, apiId, apiKey);
 
         JSONArray itemJsonArray = new JSONObject(api.callRequest(url))
                 .getJSONArray("equipment");
@@ -123,7 +131,7 @@ public class DnfApiService implements ApiService {
                 ring.optJSONObject("enchant")
         );
 
-        return CharacterItemDto.builder()
+        CharacterItemDto characterItemDto = CharacterItemDto.builder()
                 .weaponReinforce(weapon.optInt("reinforce"))                // 무기 강화
                 .weaponRefine(weapon.optInt("refine"))                      // 무기 재련
                 .weaponAmp(findJsonString(weapon, "amplificationName"))           // 무기 증폭 여부
@@ -131,13 +139,18 @@ public class DnfApiService implements ApiService {
                 .wrist(accessoryEnchantList.get(1))                             // 팔찌 마부
                 .ring(accessoryEnchantList.get(2))                              // 반지 마부
                 .siv(calcSupportEnchant(support.optJSONObject("enchant")))  // 시브마부  유무
-                .creature(isEndCreature(callCreature(server, characterApiId)))  // 종결 크리쳐 유무
-                .aurora(isEndAurora(callAurora(server, characterApiId)))        // 종결 오라 유무
+                .creature(isEndCreature(callCreature(server, apiId)))  // 종결 크리쳐 유무
+                .aurora(isEndAurora(callAurora(server, apiId)))        // 종결 오라 유무
                 .title(isEndTitle(title.optString("itemName")))             // 종결 칭호 유무
                 .enchantSkillBonus(calcEnchantSkillBonus(                       // 어벨 스증마부 합
                         shoulder.optJSONObject("enchant"),
                         belt.optJSONObject("enchant")))
                 .build();
+
+        String logging = "apiId : " + apiId + " / server : " + server;
+        log.info("Item API [{}]", logging);
+
+        return characterItemDto;
     }
 
     // 착용중인 크리쳐 정보

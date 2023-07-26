@@ -12,19 +12,17 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import static com.party_grouping.entity.QCharacterItemEntity.characterItemEntity;
 
 public class CharacterItemRepo {
     @PersistenceContext
     private EntityManager em;
     private final JPAQueryFactory queryFactory;
-    private final QCharacterItemEntity qCharacterItemEntity;
     @Autowired
     private ModelMapper modelMapper;
 
-    public CharacterItemRepo(JPAQueryFactory queryFactory, QCharacterItemEntity qCharacterItemEntity) {
+    public CharacterItemRepo(JPAQueryFactory queryFactory) {
         this.queryFactory = queryFactory;
-        this.qCharacterItemEntity = qCharacterItemEntity;
     }
 
     @Transactional

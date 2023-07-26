@@ -4,8 +4,6 @@ import com.party_grouping.api.CharacterYaml;
 import com.party_grouping.data.CharacterNode;
 import com.party_grouping.dto.CharacterDto;
 import com.party_grouping.request.CharacterRequest;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,13 +20,11 @@ public class CharacterServiceTest {
     @Test
     void Test1() {
         LinkedList<CharacterNode> linkedList = new LinkedList<>();
-
     }
     @Test
     void test() {
         // Given
         CharacterDto characterDto = characterService.characterStatus("prey", "7870bfed4e22a77e8e6d11413ec0e479");
-
         // When
 
         // Then
